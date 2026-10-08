@@ -43,7 +43,7 @@ python -m http.server 8000   # http://localhost:8000
 ## Deploy
 
 Push to `main`. Pages settings: **Deploy from a branch → `main` / `(root)`**, custom domain `zhongguo.galle.to`, Enforce HTTPS.
-`.nojekyll` turns off Jekyll so files are served exactly as they are.
+`.nojekyll` turns off Jekyll so files are served exactly as they are. `CNAME` holds the custom domain: do not delete it, or Pages drops `zhongguo.galle.to`.
 
 ## Offline
 

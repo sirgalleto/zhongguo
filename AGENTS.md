@@ -81,7 +81,7 @@ The "Preview a date" control simulates any day of the trip (city, board, seal, s
 
 ## Deploy
 
-Push to `main`. Pages: **Deploy from a branch → `main` / (root)**, custom domain `zhongguo.galle.to`, Enforce HTTPS. `.nojekyll` keeps files served as-is.
+Push to `main`. Pages: **Deploy from a branch → `main` / (root)**, custom domain `zhongguo.galle.to`, Enforce HTTPS. `.nojekyll` keeps files served as-is. **Never delete `CNAME`**: with branch deploys it is what keeps the custom domain, and removing it takes `zhongguo.galle.to` offline.
 
 ## Commits
 
