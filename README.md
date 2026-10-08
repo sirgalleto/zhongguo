@@ -13,7 +13,12 @@ Phone app for the Oct 11 to Nov 4 China trip: itinerary, accommodation, daily pl
 3. Commit and push
 
 ## Deploy
-Settings > Pages > Deploy from branch > `main` / `docs`.
+Live at https://zhongguo.galle.to
+
+- Settings > Pages > Deploy from branch > `main` / `docs`
+- Custom domain comes from `docs/CNAME` (`zhongguo.galle.to`)
+- DNS: `CNAME zhongguo → sirgalleto.github.io`
+- Tick "Enforce HTTPS" once the certificate is issued (needed for the service worker)
 
 ## Install
 - iPhone (Safari): Share > Add to Home Screen
