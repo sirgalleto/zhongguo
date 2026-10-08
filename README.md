@@ -40,6 +40,10 @@ scripts/
 python -m http.server 8000   # http://localhost:8000
 ```
 
+## Shipping a new version
+
+See **[RELEASING.md](RELEASING.md)**.
+
 ## Deploy
 
 Push to `main`. Pages settings: **Deploy from a branch → `main` / `(root)`**, custom domain `zhongguo.galle.to`, Enforce HTTPS.

@@ -66,6 +66,10 @@ Each entry is `[English, 汉字, pinyin with tone marks, optional spoken text]`.
 
 `sw.js` is network-first with a cache fallback and pre-caches the shell plus every photo in `img/credits.json`. Edits show up on their own. Bump `CACHE` only to force a full re-download. Add any new top-level file to `SHELL`.
 
+## Shipping
+
+Follow **[RELEASING.md](RELEASING.md)** for every change that goes to `main`: local checks, when to bump the service worker, push, and live verification.
+
 ## Check before pushing
 
 ```bash
