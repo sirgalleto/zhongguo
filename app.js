@@ -234,7 +234,7 @@ function stopUnderBoard(){
    a city's section moves the train along the line toward the next city. */
 const RAIL_POS=(()=>{
   const hrs=STAYS.slice(1).map(s=>s.rail||1), total=hrs.reduce((a,b)=>a+b,0);
-  const start=5, span=90, minGap=6, free=span-minGap*hrs.length;
+  const start=5, span=90, minGap=11, free=span-minGap*hrs.length; // minGap keeps close cities (Shenzhen, Guangzhou) readable
   const pos=[start]; hrs.forEach(h=>pos.push(pos[pos.length-1]+minGap+free*h/total));
   return pos.map(x=>+x.toFixed(2));
 })();
