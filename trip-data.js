@@ -17,14 +17,16 @@ const CITIES={
   sz:{en:'Shenzhen',zh:'深圳',py:'Shēnzhèn'},
   gz:{en:'Guangzhou',zh:'广州',py:'Guǎngzhōu'}
 };
+/* rail: approximate high-speed rail hours from the previous city. Drives the spacing
+   on the Itinerary rail, so close cities sit close together. */
 const STAYS=[
   {c:'sh',name:'Waiting Hotel (Shanghai Bund Nanjing East Road Pedestrian Street)',in:'2026-10-11',out:'2026-10-14',room:'Premium One-Bed Room',price:'REMOVED',no:'REMOVED',area:'南京东路步行街 · Nanjing East Rd'},
-  {c:'bj',name:'Manxin Hotel Beijing Temple of Heaven',in:'2026-10-14',out:'2026-10-18',room:'Guestroom (Queen Bed)',price:'REMOVED',no:'REMOVED',area:'天坛 · Temple of Heaven'},
-  {c:'xa',name:"Mcsrh Hotel (Xi'an Bell and Drum Tower Branch)",in:'2026-10-18',out:'2026-10-21',room:'M1 Delight Double Bed Room',price:'REMOVED',no:'REMOVED',area:'钟鼓楼 · Bell & Drum Tower'},
-  {c:'cd',name:'Mcsrh Hotel (Chengdu Chunxi Road Taikoo Li Branch)',in:'2026-10-21',out:'2026-10-25',room:'Sunshine M1 (Double Bed)',price:'REMOVED',no:'REMOVED',area:'春熙路 太古里 · Chunxi Rd, Taikoo Li'},
-  {c:'cq',name:'Asiam International Hotel in Hongyadong, Jiefangbei, Chongqing',in:'2026-10-25',out:'2026-10-29',room:'Lanshan City View King Room',price:'REMOVED',no:'REMOVED',area:'洪崖洞 解放碑 · Hongyadong, Jiefangbei'},
-  {c:'sz',name:'Garden Bincee Hotel by Lux Cabins (Futian Convention and Exhibition Center, Gangxia Subway Station)',in:'2026-10-29',out:'2026-10-31',room:'Deluxe King Room',price:'REMOVED',no:'REMOVED',area:'福田 岗厦 · Futian, Gangxia'},
-  {c:'gz',name:'Guangzhou Beston Hotel (Liwang Huadiwan Metro Station Branch)',in:'2026-10-31',out:'2026-11-04',room:'City View Special Queen Room',price:'REMOVED',no:'REMOVED',area:'荔湾 花地湾 · Liwan, Huadiwan'}
+  {c:'bj',rail:5,name:'Manxin Hotel Beijing Temple of Heaven',in:'2026-10-14',out:'2026-10-18',room:'Guestroom (Queen Bed)',price:'REMOVED',no:'REMOVED',area:'天坛 · Temple of Heaven'},
+  {c:'xa',rail:5,name:"Mcsrh Hotel (Xi'an Bell and Drum Tower Branch)",in:'2026-10-18',out:'2026-10-21',room:'M1 Delight Double Bed Room',price:'REMOVED',no:'REMOVED',area:'钟鼓楼 · Bell & Drum Tower'},
+  {c:'cd',rail:4,name:'Mcsrh Hotel (Chengdu Chunxi Road Taikoo Li Branch)',in:'2026-10-21',out:'2026-10-25',room:'Sunshine M1 (Double Bed)',price:'REMOVED',no:'REMOVED',area:'春熙路 太古里 · Chunxi Rd, Taikoo Li'},
+  {c:'cq',rail:1.75,name:'Asiam International Hotel in Hongyadong, Jiefangbei, Chongqing',in:'2026-10-25',out:'2026-10-29',room:'Lanshan City View King Room',price:'REMOVED',no:'REMOVED',area:'洪崖洞 解放碑 · Hongyadong, Jiefangbei'},
+  {c:'sz',rail:7.25,name:'Garden Bincee Hotel by Lux Cabins (Futian Convention and Exhibition Center, Gangxia Subway Station)',in:'2026-10-29',out:'2026-10-31',room:'Deluxe King Room',price:'REMOVED',no:'REMOVED',area:'福田 岗厦 · Futian, Gangxia'},
+  {c:'gz',rail:0.75,name:'Guangzhou Beston Hotel (Liwang Huadiwan Metro Station Branch)',in:'2026-10-31',out:'2026-11-04',room:'City View Special Queen Room',price:'REMOVED',no:'REMOVED',area:'荔湾 花地湾 · Liwan, Huadiwan'}
 ];
 const TRANSIT={
   '2026-10-11':{text:'Fly Taipei → Hong Kong → Shanghai Pudong T2, land 22:10',status:'confirmed'},

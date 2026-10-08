@@ -100,8 +100,9 @@ function renderItinerary(){
 
   const rail=STAYS.map((s,i)=>{
     const cls=(p.when==='after'||i<curIdx)?'past':i===curIdx?'now':'';
-    return `<li class="${cls}" style="--cc:var(--c-${s.c})"><button class="railbtn" data-go="${i}" aria-label="Go to ${CITIES[s.c].en}"><span class="dot"></span><span class="zh">${CITIES[s.c].zh}</span></button></li>`;
+    return `<li class="${cls}${i%2?' low':''}" style="--cc:var(--c-${s.c});left:${RAIL_POS[i]}%"><button class="railbtn" data-go="${i}" aria-label="Go to ${CITIES[s.c].en}"><span class="dot"></span><span class="zh">${CITIES[s.c].zh}</span></button></li>`;
   }).join('');
+  const hours=STAYS.slice(1).map((s,i)=>`<span class="hrs mono" style="left:${(RAIL_POS[i]+RAIL_POS[i+1])/2}%">${fmtHours(s.rail)}</span>`).join('');
 
   const stops=STAYS.map((s,i)=>{
     const c=CITIES[s.c], n=nightsOf(s);
@@ -120,7 +121,7 @@ function renderItinerary(){
     }).join('');
     const bookedToday=(i===curIdx&&PLAN[t])?PLAN[t].i.map(norm).filter(x=>x.status):[];
     const next=STAYS[i+1], leg=next?TRANSIT[next.in]:TRANSIT[END];
-    return `<section class="stop${i===curIdx?' current':''}${(p.when==='after'||i<curIdx)?' done':''}" data-i="${i}" id="stop-${s.c}" style="--cc:var(--c-${s.c})">
+    return `<section style="--n:${n}" class="stop${i===curIdx?' current':''}${(p.when==='after'||i<curIdx)?' done':''}" data-i="${i}" id="stop-${s.c}" style="--cc:var(--c-${s.c})">
       <div class="stop-head"><span class="n mono">${String(i+1).padStart(2,'0')}</span><span class="zh">${c.zh}</span><b>${c.en}</b></div>
       <div class="stop-meta mono">${range(s)} · ${n} night${n>1?'s':''}</div>
       <div class="stop-hotel">${esc(s.name.split(' (')[0])}<span class="mono">${esc(s.room)}</span></div>
@@ -138,7 +139,9 @@ function renderItinerary(){
         <div class="stamp" id="seal" hidden><span class="zh">今天</span></div>
       </div>
       <div class="big-py" id="b-py"></div>
-      <div class="route"><ol><span class="fill" id="rfill"></span>${rail}</ol></div>
+      <div class="route rail" style="--r0:${RAIL_POS[0]}%;--r6:${RAIL_POS[RAIL_POS.length-1]}%">
+        <ol><span class="fill" id="rfill"></span>${hours}${rail}<span class="train" id="train" aria-hidden="true">${TRAIN_SVG}</span></ol>
+      </div>
     </div>
     <div class="stops">${stops}</div>
     <div class="sim"><label for="simdate">Preview a date</label><input type="date" id="simdate" min="2026-10-01" max="2026-11-10" value="${sim||''}"><button class="btn" id="simreset">Use real today</button></div>`;
@@ -150,8 +153,7 @@ function renderItinerary(){
   viewIdx=-1; setView(startIdx,false);
   if(!REDUCED)fontsReady.then(()=>{flip(300);if(startIdx===curIdx)setTimeout(thump,1250)});
 
-  const fill=$('#rfill');fill.style.transition='none';fill.style.width='0%';
-  requestAnimationFrame(()=>requestAnimationFrame(()=>{fill.style.transition='';fill.style.width=(85.72*prog)+'%'}));
+  lastP=-1; requestAnimationFrame(moveTrain);
 
   $('#flap').onclick=()=>{if(!REDUCED)flip(0)};
   $('#seal').onclick=thump;
@@ -189,11 +191,45 @@ function stopUnderBoard(){
   document.querySelectorAll('.stop').forEach(sec=>{if(sec.getBoundingClientRect().top<=line)idx=+sec.dataset.i});
   return idx;
 }
+/* ---------- The train ----------
+   Rail spacing follows rail hours (close cities sit close). Sections are taller for longer
+   stays, so the train spends more scroll on cities where you stay longer. Scrolling through
+   a city's section moves the train along the line toward the next city. */
+const RAIL_POS=(()=>{
+  const hrs=STAYS.slice(1).map(s=>s.rail||1), total=hrs.reduce((a,b)=>a+b,0);
+  const start=5, span=90, minGap=6, free=span-minGap*hrs.length;
+  const pos=[start]; hrs.forEach(h=>pos.push(pos[pos.length-1]+minGap+free*h/total));
+  return pos.map(x=>+x.toFixed(2));
+})();
+const fmtHours=h=>{const m=Math.round(h*60), hh=Math.floor(m/60), mm=m%60;return hh?`${hh}h${mm?String(mm).padStart(2,'0'):''}`:`${mm}m`};
+const TRAIN_SVG='<svg viewBox="0 0 34 12"><path d="M2 2h20c5 0 9 2.2 11 4.5V9a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V3a1 1 0 0 1 1-1z"/><path class="win" d="M5 4.5h3v2H5zM10 4.5h3v2h-3zM15 4.5h3v2h-3z"/><path class="nose" d="M23 4.2c3 .3 5.8 1.3 7.6 3H23z"/></svg>';
+let lastP=-1;
+function trainProgress(){
+  const board=$('#board'); if(!board)return 0;
+  const line=board.getBoundingClientRect().bottom+Math.min(140,innerHeight*.18);
+  const secs=[...document.querySelectorAll('.stop')];
+  let i=0; secs.forEach((sec,k)=>{if(sec.getBoundingClientRect().top<=line)i=k});
+  const a=secs[i].getBoundingClientRect(), endTop=secs[i+1]?secs[i+1].getBoundingClientRect().top:a.bottom;
+  const f=Math.min(1,Math.max(0,(line-a.top)/Math.max(1,endTop-a.top)));
+  return Math.min(i+f,STAYS.length-1);
+}
+function moveTrain(){
+  const tr=$('#train'), fill=$('#rfill'); if(!tr)return;
+  const p=trainProgress(); if(Math.abs(p-lastP)<0.001)return;
+  const i=Math.floor(p), f=p-i, a=RAIL_POS[i], b=RAIL_POS[Math.min(i+1,RAIL_POS.length-1)];
+  const x=a+(b-a)*f;
+  tr.classList.toggle('back',p<lastP);
+  tr.classList.toggle('docked',f<0.04||i>=STAYS.length-1);
+  tr.style.left=x+'%';
+  fill.style.width=(x-RAIL_POS[0])+'%';
+  lastP=p;
+}
 let ticking=false;
 window.addEventListener('scroll',()=>{
   if(ticking||$('#p-itinerary').hidden)return; ticking=true;
-  requestAnimationFrame(()=>{ticking=false;setView(stopUnderBoard(),true)});
+  requestAnimationFrame(()=>{ticking=false;setView(stopUnderBoard(),true);moveTrain()});
 },{passive:true});
+window.addEventListener('resize',()=>{lastP=-1;moveTrain()});
 
 function scrollToStop(i,smooth){
   const sec=document.querySelector(`.stop[data-i="${i}"]`); if(!sec)return;

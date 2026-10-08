@@ -211,11 +211,27 @@ nav.tabs{position:fixed;left:0;right:0;bottom:0;z-index:6;background:color-mix(i
 .board .big-zh{margin-top:0}
 .board .big-py{margin-top:10px}
 .board .route{margin-top:16px;padding:0}
+/* Rail: dots placed by rail hours, labels alternate rows so close cities don't collide */
+.route.rail ol{display:block;height:64px}
+.route.rail ol::before{left:var(--r0);right:calc(100% - var(--r6));top:14px}
+.route.rail .fill{left:var(--r0);top:14px;height:1.5px;transition:width .12s linear}
+.route.rail li{position:absolute;top:8px;transform:translateX(-50%);width:auto}
+.route.rail li.low .railbtn{padding-top:18px}
+.route.rail li.low .dot{margin-top:-18px}
+.route.rail .railbtn{gap:5px}
+.route.rail .hrs{position:absolute;top:0;transform:translate(-50%,-4px);font-size:9px;color:var(--muted);letter-spacing:.04em;white-space:nowrap}
+.train{position:absolute;top:14px;left:var(--r0);width:30px;height:11px;transform:translate(-50%,-50%);color:var(--accent);filter:drop-shadow(var(--glow));transition:left .12s linear;pointer-events:none;z-index:2}
+.train svg{display:block;width:100%;height:100%;fill:currentColor}
+.train .win{fill:var(--paper);opacity:.85}
+.train .nose{fill:var(--paper);opacity:.35}
+.train.back svg{transform:scaleX(-1)}
+.train.docked{transform:translate(-50%,-50%) scale(.9)}
+.route.rail li.view .dot{transform:scale(1.35)}
 .railbtn{background:none;border:0;padding:0;display:flex;flex-direction:column;align-items:center;gap:6px;color:inherit;width:100%}
 .route li.view .dot{border-color:var(--accent);border-width:2px;transform:scale(1.2)}
 .route li.view .zh{color:var(--accent)}
 .stops{display:flex;flex-direction:column;padding-bottom:30vh}
-.stop{min-height:62vh;padding:32px 0 8px;display:flex;flex-direction:column;gap:12px}
+.stop{min-height:calc(24vh + var(--n,3) * 15vh);padding:32px 0 8px;display:flex;flex-direction:column;gap:12px}
 .stop-head{display:flex;align-items:baseline;gap:12px}
 .stop-head .n{font-size:11px;color:var(--muted);letter-spacing:.08em}
 .stop-head .zh{font-size:32px;font-weight:300;color:var(--cc);letter-spacing:.08em;line-height:1}
