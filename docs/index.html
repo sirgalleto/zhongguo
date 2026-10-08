@@ -83,6 +83,7 @@ nav.tabs{position:fixed;left:0;right:0;bottom:0;z-index:6;background:color-mix(i
 .flapch{font-family:var(--f-display);font-weight:300;font-size:clamp(54px,17vw,80px);line-height:1;width:1.12em;height:1.3em;display:grid;place-items:center;border:1px solid var(--line);border-radius:4px;color:var(--accent);text-shadow:var(--glow);position:relative;overflow:hidden;background:var(--faint)}
 .flapch::after{content:"";position:absolute;left:0;right:0;top:50%;height:1px;background:var(--line)}
 .flapch.spin{color:var(--muted)}
+#flap,.stamp{cursor:pointer;-webkit-tap-highlight-color:transparent}
 .big-py{font-family:var(--f-mono);font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin-top:12px}
 .stamp{border:1.5px solid var(--accent);border-radius:3px;color:var(--accent);padding:6px 5px;display:flex;align-items:center;justify-content:center;transform:rotate(-4deg);line-height:1}
 .stamp .zh{writing-mode:vertical-rl;font-size:17px;font-weight:700;letter-spacing:.12em;display:block}
@@ -199,7 +200,8 @@ nav.tabs{position:fixed;left:0;right:0;bottom:0;z-index:6;background:color-mix(i
 @media (prefers-reduced-motion:no-preference){
   .day.today,.pday.today{animation:pulse 1.6s ease-out 1}
   @keyframes pulse{from{box-shadow:0 0 0 6px var(--stamp-soft)}}
-  .stamp.thump{animation:thump .5s cubic-bezier(.3,1.6,.5,1) .55s both}
+  .stamp.thump{animation:thump .5s cubic-bezier(.3,1.6,.5,1) .9s both}
+  .stamp.thump.now{animation-delay:0s}
   @keyframes thump{0%{transform:rotate(-20deg) scale(1.9);opacity:0}60%{opacity:1}100%{transform:rotate(-4deg) scale(1)}}
   section[role=tabpanel].enter{animation:glide .18s ease-out}
   @keyframes glide{from{opacity:0;transform:translateX(8px)}}
@@ -376,16 +378,21 @@ const FLAP_GLYPHS='上海北京西安成都重庆深圳广州东南中华城站'
 function flip(delay){
   const tiles=[...document.querySelectorAll('#flap .flapch')];
   tiles.forEach((el,k)=>{
-    const target=el.textContent; let n=0;
+    if(el._flip)clearInterval(el._flip);
+    const target=el.dataset.ch||(el.dataset.ch=el.textContent); let n=0;
     setTimeout(()=>{
       el.classList.add('spin');
-      const it=setInterval(()=>{
-        if(++n>6+k*4){clearInterval(it);el.textContent=target;el.classList.remove('spin');return}
-        el.textContent=FLAP_GLYPHS[Math.floor(Math.random()*FLAP_GLYPHS.length)];
-      },55);
+      el._flip=setInterval(()=>{
+        const done=++n>10+k*6;
+        el.textContent=done?target:FLAP_GLYPHS[Math.floor(Math.random()*FLAP_GLYPHS.length)];
+        try{el.animate([{transform:'scaleY(.1)'},{transform:'scaleY(1)'}],{duration:70,easing:'ease-out'})}catch(e){}
+        if(done){clearInterval(el._flip);el._flip=null;el.classList.remove('spin')}
+      },80);
     },delay);
   });
 }
+function thump(){const el=document.querySelector('.stamp');if(!el||REDUCED)return;el.classList.remove('thump','now');void el.offsetWidth;el.classList.add('thump','now')}
+const fontsReady=(document.fonts&&document.fonts.ready)?document.fonts.ready.catch(()=>{}):Promise.resolve();
 function applyCityAccent(){
   const p=phase();
   const c=p.when==='before'?STAYS[0].c:p.when==='after'?STAYS[STAYS.length-1].c:p.day.c;
@@ -420,8 +427,8 @@ function renderItinerary(){
   const cIdx=STAYS.indexOf(stay);
   const prog=p.when==='before'?0:p.when==='after'?1:cIdx/(STAYS.length-1);
   const animRoute=!routeDrawn&&!REDUCED&&prog>0;
-  const stampNow=p.when==='during'&&!REDUCED&&!sim&&store.get('cn-stamp-day','')!==p.day.k;
-  if(stampNow)store.set('cn-stamp-day',p.day.k);
+  const stampNow=!REDUCED&&(sim?true:store.get('cn-stamp-day','')!==today());
+  if(stampNow&&!sim)store.set('cn-stamp-day',today());
   const route=STAYS.map((s,i)=>{
     let cls='';
     if(p.when==='after'||(p.when==='during'&&i<cIdx))cls='past';
@@ -468,7 +475,9 @@ function renderItinerary(){
   const fill=$('#rfill'),W=85.72*prog;
   if(animRoute){routeDrawn=true;requestAnimationFrame(()=>requestAnimationFrame(()=>{fill.style.width=W+'%';const r=$('.route');setTimeout(()=>r&&r.classList.remove('pending'),700)}))}
   else{fill.style.transition='none';fill.style.width=W+'%';routeDrawn=true}
-  if(shownCity!==stay.c){const first=shownCity===null;shownCity=stay.c;if(!REDUCED)flip(first?280:0)}
+  if(shownCity!==stay.c){const first=shownCity===null;shownCity=stay.c;if(!REDUCED){if(first)fontsReady.then(()=>flip(300));else flip(0)}}
+  $('#flap').onclick=()=>{if(!REDUCED)flip(0)};
+  $('.stamp').onclick=thump;
   $('#simdate').onchange=e=>{sim=e.target.value||null;renderAll()};
   $('#simreset').onclick=()=>{sim=null;renderAll()};
 }
