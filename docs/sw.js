@@ -1,4 +1,4 @@
-const CACHE='china-trip-1e8810d0';
+const CACHE='china-trip-245076f3';
 const SHELL=['./','./index.html','./manifest.webmanifest','./icon-192.png','./icon-512.png','./apple-touch-icon.png'];
 self.addEventListener('install',e=>{e.waitUntil(caches.open(CACHE).then(async c=>{
   await c.addAll(SHELL);

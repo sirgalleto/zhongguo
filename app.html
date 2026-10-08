@@ -397,6 +397,14 @@ function setStatus(){
   const p=phase(),s=$('#status');
   s.textContent=p.when==='before'?`Starts in ${p.n} day${p.n===1?'':'s'}`:p.when==='after'?'Trip complete':`Day ${p.idx+1} of ${DAYS.length}`;
 }
+/* Status for the city in view on the Itinerary: counts to its check-in, or says where you are */
+function setStatusFor(i){
+  const s=STAYS[i], t=today(), name=CITIES[s.c].en, el=$('#status');
+  const days=Math.round((toUTC(s.in)-toUTC(t))/DAY);
+  if(t>=s.in&&t<s.out||(t===s.out&&s.out===END)){const p=phase();el.textContent=`Here now · day ${p.idx+1} of ${DAYS.length}`}
+  else if(days>0)el.textContent=days===1?`${name} tomorrow`:`${name} in ${days} days`;
+  else el.textContent=`${name} · visited`;
+}
 
 /* ---------- Motion ---------- */
 const REDUCED=(()=>{try{return matchMedia('(prefers-reduced-motion: reduce)').matches}catch(e){return false}})();
@@ -512,6 +520,7 @@ function setView(i,animate){
   if(i===curIdx&&p.day.kind!=='depart'){const k=(toUTC(p.day.k)-toUTC(s.in))/DAY+1;label=`Today · night ${k} of ${n}`}
   else if(i===curIdx)label='Today · departure';
   $('#b-label').textContent=label;
+  setStatusFor(i);
   $('#b-idx').textContent=`${String(i+1).padStart(2,'0')} / ${String(STAYS.length).padStart(2,'0')}`;
   $('#b-py').textContent=`${c.py} · ${c.en}`;
   $('#flap').setAttribute('aria-label',c.zh);
@@ -609,7 +618,7 @@ function renderPlan(){
 
 /* ---------- Photos (docs/img, fetched by the GitHub Action) ---------- */
 let PHOTOS=null;
-fetch('img/credits.json').then(r=>r.ok?r.json():[]).then(list=>{PHOTOS=list;fillGalleries()}).catch(()=>{PHOTOS=[]});
+(typeof fetch==='function'?fetch('img/credits.json'):Promise.reject()).then(r=>r.ok?r.json():[]).then(list=>{PHOTOS=list;fillGalleries()}).catch(()=>{PHOTOS=[]});
 function fillGalleries(){
   if(!PHOTOS||!PHOTOS.length)return;
   document.querySelectorAll('.gallery[data-city]').forEach(g=>{
@@ -737,7 +746,7 @@ function go(tab,scroll){
   if(tab==='itinerary'){
     if(viewIdx>=0)document.documentElement.style.setProperty('--accent',`var(--c-${STAYS[viewIdx].c})`);
     if(!journeyScrolled&&curIdx>0){journeyScrolled=true;requestAnimationFrame(()=>scrollToStop(curIdx,false))}
-  }else applyCityAccent();
+  }else{applyCityAccent();setStatus()}
 }
 document.querySelectorAll('.tab').forEach(b=>b.onclick=()=>go(b.dataset.tab,true));
 
