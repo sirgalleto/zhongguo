@@ -1,5 +1,5 @@
-const CACHE='china-trip-a1062e23';
-const SHELL=['./','./index.html','./manifest.webmanifest','./icon-192.png','./icon-512.png','./apple-touch-icon.png'];
+const CACHE='china-trip-__VERSION__'; // replaced by scripts/build.py
+const SHELL=['./','./index.html','./styles.css','./trip-data.js','./phrases.js','./app.js','./manifest.webmanifest','./icons/icon-192.png','./icons/icon-512.png','./icons/apple-touch-icon.png'];
 self.addEventListener('install',e=>{e.waitUntil(caches.open(CACHE).then(async c=>{
   await c.addAll(SHELL);
   // Pre-cache city photos so the Plan tab works offline (and behind the firewall)

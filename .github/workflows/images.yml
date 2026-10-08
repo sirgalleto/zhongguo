@@ -1,36 +1,35 @@
 name: Fetch city photos
 
+# Downloads freely licensed Wikimedia Commons photos into src/img/ and commits them.
+# Runs when the photo queries or the script change, or by hand from the Actions tab.
 on:
   workflow_dispatch:
   push:
     paths:
       - scripts/image_queries.json
       - scripts/fetch_images.py
-      - .github/workflows/images.yml
 
 permissions:
   contents: write
 
 concurrency:
   group: images-${{ github.ref }}
-  cancel-in-progress: false
 
 jobs:
   fetch:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
       - run: pip install pillow
       - run: python scripts/fetch_images.py
-      - run: python build.py
       - name: Commit photos
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898900+github-actions[bot]@users.noreply.github.com"
-          git add docs
+          git add src/img
           git diff --cached --quiet && echo "No changes" && exit 0
           git commit -m "Update city photos"
           git push
