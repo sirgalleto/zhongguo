@@ -59,7 +59,44 @@ function setStatusFor(i){
 const REDUCED=(()=>{try{return matchMedia('(prefers-reduced-motion: reduce)').matches}catch(e){return false}})();
 const FLAP_GLYPHS='上海北京西安成都重庆深圳广州东南中华城站';
 const FLIP_TICKS=4, FLIP_STAGGER=2; // flips per tile; second tile settles a bit later
+/* Touch devices get a real split-flap (two halves that fold), tuned on iPhone Safari:
+   1 extra character before landing, 200 ms per flap. Desktop keeps the fast character swap. */
+const SPLIT_FLAP=(()=>{try{return matchMedia('(hover: none) and (pointer: coarse)').matches}catch(e){return false}})();
+const SF_EXTRA=1, SF_MS=200, SF_STAGGER=90;
+const SF_HAS_WAAPI=typeof Element!=='undefined'&&typeof Element.prototype.animate==='function';
+function setTile(el,ch){
+  el.dataset.ch=ch; el.dataset.shown=ch;
+  if(el._run)el._run=null;
+  if(SPLIT_FLAP){el.classList.add('sf');el.innerHTML=`<span class="h t"><span>${ch}</span></span><span class="h b"><span>${ch}</span></span>`}
+  else el.textContent=ch;
+}
+function sfHalf(cls,ch){const h=document.createElement('span');h.className='h '+cls;const i=document.createElement('span');i.textContent=ch;h.appendChild(i);return h}
+async function sfFlipOnce(el,next){
+  const cur=el.dataset.shown; if(cur===next)return;
+  const top=el.querySelector('.h.t:not(.flap) > span'), bot=el.querySelector('.h.b:not(.flap) > span');
+  if(!top||!bot){setTile(el,next);return}
+  const fTop=sfHalf('t flap',cur), fBot=sfHalf('b flap',next);
+  fBot.style.transform='perspective(300px) rotateX(90deg)';
+  el.appendChild(fTop);el.appendChild(fBot);
+  top.textContent=next;
+  const sleep=t=>new Promise(r=>setTimeout(r,t));
+  if(SF_HAS_WAAPI){
+    await fTop.animate([{transform:'perspective(300px) rotateX(0deg)'},{transform:'perspective(300px) rotateX(-90deg)'}],{duration:SF_MS,easing:'ease-in',fill:'forwards'}).finished.catch(()=>{});
+    await fBot.animate([{transform:'perspective(300px) rotateX(90deg)'},{transform:'perspective(300px) rotateX(0deg)'}],{duration:SF_MS,easing:'ease-out',fill:'forwards'}).finished.catch(()=>{});
+  }else await sleep(SF_MS*2);
+  bot.textContent=next; el.dataset.shown=next; fTop.remove(); fBot.remove();
+}
+async function sfSpin(el,extra){
+  const target=el.dataset.ch, run={}; el._run=run;
+  const seq=[];for(let k=0;k<extra;k++){let g;do{g=FLAP_GLYPHS[Math.floor(Math.random()*FLAP_GLYPHS.length)]}while(g===target||g===el.dataset.shown||g===seq[seq.length-1]);seq.push(g)}
+  seq.push(target);
+  for(const g of seq){if(el._run!==run)return;await sfFlipOnce(el,g)}
+}
 function flip(delay){
+  if(SPLIT_FLAP){
+    [...document.querySelectorAll('#flap .flapch')].forEach((el,k)=>setTimeout(()=>sfSpin(el,SF_EXTRA+k),delay+k*SF_STAGGER));
+    return;
+  }
   const tiles=[...document.querySelectorAll('#flap .flapch')];
   tiles.forEach((el,k)=>{
     if(el._flip)clearInterval(el._flip);
@@ -149,7 +186,7 @@ function renderItinerary(){
   /* initial board state, no animation */
   const tiles=[...document.querySelectorAll('#flap .flapch')];
   const sc=CITIES[STAYS[startIdx].c];
-  tiles.forEach((el,k)=>{el.textContent=el.dataset.ch=[...sc.zh][k]||''});
+  tiles.forEach((el,k)=>setTile(el,[...sc.zh][k]||''));
   viewIdx=-1; setView(startIdx,false);
   if(!REDUCED)fontsReady.then(()=>{flip(300);if(startIdx===curIdx)setTimeout(thump,1250)});
 
@@ -178,7 +215,7 @@ function setView(i,animate){
   document.querySelectorAll('.route li').forEach((li,k)=>li.classList.toggle('view',k===i));
   [...document.querySelectorAll('#flap .flapch')].forEach((el,k)=>{el.dataset.ch=[...c.zh][k]||''});
   if(animate&&!REDUCED)flip(0);
-  else document.querySelectorAll('#flap .flapch').forEach(el=>{if(!el._flip)el.textContent=el.dataset.ch});
+  else document.querySelectorAll('#flap .flapch').forEach(el=>{if(!el._flip)setTile(el,el.dataset.ch)});
   const seal=$('#seal'), isCur=i===curIdx;
   seal.hidden=!isCur;
   if(isCur&&animate)thump();

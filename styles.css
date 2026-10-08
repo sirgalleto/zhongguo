@@ -71,6 +71,18 @@ nav.tabs{position:fixed;left:0;right:0;bottom:0;z-index:6;background:color-mix(i
 .flapch{font-family:var(--f-display);font-weight:300;font-size:clamp(54px,17vw,80px);line-height:1;width:1.12em;height:1.3em;display:grid;place-items:center;border:1px solid var(--line);border-radius:4px;color:var(--accent);text-shadow:var(--glow);position:relative;overflow:hidden;background:var(--faint)}
 .flapch::after{content:"";position:absolute;left:0;right:0;top:50%;height:1px;background:var(--line)}
 .flapch.spin{color:var(--muted)}
+/* Split-flap on touch devices: two halves, flaps fold over the midline */
+.flapch.sf{display:block}
+.flapch.sf .h{position:absolute;left:0;right:0;height:50%;overflow:hidden;background:var(--faint)}
+.flapch.sf .h.t{top:0}
+.flapch.sf .h.b{bottom:0}
+.flapch.sf .h > span{position:absolute;left:0;right:0;height:calc(1.3em - 2px);line-height:calc(1.3em - 2px);text-align:center}
+.flapch.sf .h.t > span{top:0}
+.flapch.sf .h.b > span{top:calc(1px - .65em)}
+.flapch.sf .h.flap{z-index:2}
+.flapch.sf .h.t.flap{transform-origin:50% 100%}
+.flapch.sf .h.b.flap{transform-origin:50% 0}
+.flapch.sf::after{z-index:3}
 #flap,.stamp{cursor:pointer;-webkit-tap-highlight-color:transparent}
 .big-py{font-family:var(--f-mono);font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin-top:12px}
 .stamp{border:1.5px solid var(--accent);border-radius:3px;color:var(--accent);padding:6px 5px;display:flex;align-items:center;justify-content:center;transform:rotate(-4deg);line-height:1}
