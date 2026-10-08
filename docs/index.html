@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="theme-color" content="#14233a">
+<meta name="theme-color" content="#0C0E1C">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="China Trip">
@@ -16,26 +16,29 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Noto+Serif+SC:wght@600;900&display=swap">
 <style>
 /* Layout: phone app shell. Compact sticky top bar, one scrolling panel per tab, fixed bottom tab bar.
-   Look: China rail ticket. Pale ticket-blue paper, navy ink, one vermilion "stamp" that marks today. */
+   Look: neon megacity, dark-first. Each city owns a neon accent; the whole app takes on
+   today's city color through --accent (set from JS). Status colors (ok / warn) never change per city. */
 :root{
-  --paper:#edf2f5; --card:#ffffff; --ink:#14233a; --muted:#59697e; --line:#d2dce5; --ticket:#dce8f0;
-  --stamp:#c4361f; --stamp-soft:#f7e1db; --ok:#2c7656; --ok-soft:#dcefe5; --warn:#9a5a08; --warn-soft:#f8ead2;
-  --c-sh:#2f5d8a; --c-bj:#9a3b2e; --c-xa:#9a6a22; --c-cd:#3b7a4b; --c-cq:#76488a; --c-sz:#1c7a82; --c-gz:#a9512f;
+  --paper:#0C0E1C; --card:#151933; --ink:#EEF0FF; --muted:#9DA2C9; --line:#272C52; --ticket:#1A1F40; --tile:#080A16;
+  --ok:#4BE3A0; --ok-soft:#10352A; --warn:#FFB547; --warn-soft:#3A2A10;
+  --c-sh:#4FA8FF; --c-bj:#FF4D6A; --c-xa:#FFB547; --c-cd:#B6F24A; --c-cq:#FF4D8D; --c-sz:#3BD6F5; --c-gz:#B583FF;
+  --accent:var(--c-sh); --glow:0 0 22px color-mix(in srgb,var(--accent) 60%,transparent);
+  --stamp:var(--accent); --stamp-soft:color-mix(in srgb,var(--accent) 16%,var(--card));
   --f-display:"Noto Serif SC","Songti SC","STSong","SimSun",serif;
   --f-body:"Instrument Sans",-apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
   --f-mono:"JetBrains Mono",ui-monospace,Menlo,Consolas,monospace;
-  --r:12px;
+  --r:12px; color-scheme:dark;
 }
-@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
-  --paper:#0e1621; --card:#162131; --ink:#e5ecf4; --muted:#93a2b6; --line:#28374b; --ticket:#1b2a3c;
-  --stamp:#f0705a; --stamp-soft:#3a201c; --ok:#62c49a; --ok-soft:#173327; --warn:#eab463; --warn-soft:#3a2b14;
-  --c-sh:#7fa9d6; --c-bj:#e08a7c; --c-xa:#d9a95c; --c-cd:#7dc08e; --c-cq:#c195d6; --c-sz:#64c3ca; --c-gz:#e79a77;
-  color-scheme:dark }}
-:root[data-theme="dark"]{
-  --paper:#0e1621; --card:#162131; --ink:#e5ecf4; --muted:#93a2b6; --line:#28374b; --ticket:#1b2a3c;
-  --stamp:#f0705a; --stamp-soft:#3a201c; --ok:#62c49a; --ok-soft:#173327; --warn:#eab463; --warn-soft:#3a2b14;
-  --c-sh:#7fa9d6; --c-bj:#e08a7c; --c-xa:#d9a95c; --c-cd:#7dc08e; --c-cq:#c195d6; --c-sz:#64c3ca; --c-gz:#e79a77;
-  color-scheme:dark }
+@media (prefers-color-scheme: light){:root:not([data-theme="dark"]){
+  --paper:#F4F3FA; --card:#FFFFFF; --ink:#191A33; --muted:#5D5F80; --line:#DEDCEC; --ticket:#ECEBF7; --tile:#191A33;
+  --ok:#0E8A57; --ok-soft:#DDF5E9; --warn:#A3620A; --warn-soft:#FBEBD0;
+  --c-sh:#1F6FD1; --c-bj:#D11E3E; --c-xa:#B87300; --c-cd:#4E8A0A; --c-cq:#D11E64; --c-sz:#0A8FAD; --c-gz:#7A4BD6;
+  --glow:none; color-scheme:light }}
+:root[data-theme="light"]{
+  --paper:#F4F3FA; --card:#FFFFFF; --ink:#191A33; --muted:#5D5F80; --line:#DEDCEC; --ticket:#ECEBF7; --tile:#191A33;
+  --ok:#0E8A57; --ok-soft:#DDF5E9; --warn:#A3620A; --warn-soft:#FBEBD0;
+  --c-sh:#1F6FD1; --c-bj:#D11E3E; --c-xa:#B87300; --c-cd:#4E8A0A; --c-cq:#D11E64; --c-sz:#0A8FAD; --c-gz:#7A4BD6;
+  --glow:none; color-scheme:light }
 
 *{box-sizing:border-box}
 html,body{background:var(--paper)}
@@ -64,13 +67,16 @@ nav.tabs{position:fixed;left:0;right:0;bottom:0;z-index:6;background:var(--card)
 .tab .zh{font-size:18px;line-height:1.3;font-weight:600}
 .tab small{font-size:11px;font-weight:600;letter-spacing:.02em}
 .tab[aria-selected=true]{color:var(--ink)}
-.tab[aria-selected=true] .zh{color:var(--stamp)}
+.tab[aria-selected=true] .zh{color:var(--accent);text-shadow:var(--glow)}
 
 /* Ticket card */
 .ticket{background:var(--ticket);border-radius:var(--r);position:relative;overflow:hidden}
 .ticket-main{padding:18px 18px 16px;display:grid;grid-template-columns:1fr auto;gap:8px 16px;align-items:end}
 .eyebrow{font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);font-weight:600}
-.big-zh{font-family:var(--f-display);font-weight:900;font-size:clamp(52px,16vw,76px);line-height:1;letter-spacing:.02em}
+.big-zh{display:flex;gap:6px;margin-top:6px}
+.flapch{font-family:var(--f-display);font-weight:900;font-size:clamp(46px,14vw,66px);line-height:1;width:1.25em;height:1.35em;display:grid;place-items:center;border-radius:8px;background:var(--tile);color:var(--accent);text-shadow:var(--glow);position:relative;overflow:hidden}
+.flapch::after{content:"";position:absolute;left:0;right:0;top:50%;height:1px;background:var(--paper);opacity:.7}
+.flapch.spin{color:color-mix(in srgb,var(--accent) 55%,var(--tile))}
 .big-py{font-size:15px;color:var(--muted);margin-top:6px}
 .stamp{width:72px;height:72px;border:2.5px solid var(--stamp);border-radius:50%;color:var(--stamp);display:grid;place-items:center;text-align:center;transform:rotate(-12deg);font-weight:700;line-height:1.1}
 .stamp .zh{font-size:22px;font-weight:900;display:block}
@@ -86,10 +92,13 @@ nav.tabs{position:fixed;left:0;right:0;bottom:0;z-index:6;background:var(--card)
 .route{background:var(--card);border-radius:var(--r);padding:16px 10px 12px;border:1px solid var(--line)}
 .route ol{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(7,1fr);position:relative}
 .route ol::before{content:"";position:absolute;left:7%;right:7%;top:9px;height:2px;background:var(--line)}
+.route .fill{position:absolute;left:7.14%;top:9px;height:2px;width:0;background:var(--accent);box-shadow:var(--glow);transition:width .7s cubic-bezier(.2,.8,.2,1)}
+.route li .dot{transition:background .2s,border-color .2s,box-shadow .2s}
 .route li{display:flex;flex-direction:column;align-items:center;gap:6px;position:relative;min-width:0}
 .route .dot{width:20px;height:20px;border-radius:50%;background:var(--card);border:3px solid var(--cc);position:relative}
 .route li.past .dot{background:var(--cc)}
-.route li.now .dot{background:var(--stamp);border-color:var(--stamp);box-shadow:0 0 0 4px var(--stamp-soft)}
+.route li.now .dot{background:var(--accent);border-color:var(--accent);box-shadow:0 0 0 4px var(--stamp-soft),var(--glow)}
+.route.pending li .dot{background:var(--card)!important;border-color:var(--line)!important;box-shadow:none!important}
 .route .zh{font-size:17px;font-weight:600}
 .route small{font-size:10px;color:var(--muted);white-space:nowrap}
 
@@ -155,7 +164,8 @@ nav.tabs{position:fixed;left:0;right:0;bottom:0;z-index:6;background:var(--card)
 .badge.tobook{background:var(--warn-soft);color:var(--warn)}
 .meta{display:flex;flex-wrap:wrap;align-items:center;gap:6px 10px;margin-top:4px;text-decoration:none}
 .pday li .txt{display:block}
-.pday li input:checked + span .txt{text-decoration:line-through;color:var(--muted)}
+.pday li .txt{background-image:linear-gradient(var(--ok),var(--ok));background-repeat:no-repeat;background-position:0 58%;background-size:0% 2px;transition:background-size .4s ease-out,color .2s}
+.pday li input:checked + span .txt{background-size:100% 2px;color:var(--muted)}
 .pday .transit{display:flex;flex-wrap:wrap;gap:6px 10px;align-items:center}
 
 /* Dictionary */
@@ -183,7 +193,12 @@ nav.tabs{position:fixed;left:0;right:0;bottom:0;z-index:6;background:var(--card)
 @media (prefers-reduced-motion:no-preference){
   .day.today,.pday.today{animation:pulse 1.6s ease-out 1}
   @keyframes pulse{from{box-shadow:0 0 0 6px var(--stamp-soft)}}
+  .stamp.thump{animation:thump .5s cubic-bezier(.3,1.6,.5,1) .55s both}
+  @keyframes thump{0%{transform:rotate(-32deg) scale(1.9);opacity:0}60%{opacity:1}100%{transform:rotate(-12deg) scale(1)}}
+  section[role=tabpanel].enter{animation:glide .18s ease-out}
+  @keyframes glide{from{opacity:0;transform:translateX(8px)}}
 }
+@media (prefers-reduced-motion:reduce){.route .fill{transition:none}.pday li .txt{transition:none}}
 @media (max-width:380px){.summary b{font-size:17px}.day{grid-template-columns:54px 4px 1fr auto;gap:10px}}
 </style>
 
@@ -348,6 +363,29 @@ function setStatus(){
   s.textContent=p.when==='before'?`Starts in ${p.n} day${p.n===1?'':'s'}`:p.when==='after'?'Trip complete':`Day ${p.idx+1} of ${DAYS.length}`;
 }
 
+/* ---------- Motion ---------- */
+const REDUCED=(()=>{try{return matchMedia('(prefers-reduced-motion: reduce)').matches}catch(e){return false}})();
+let shownCity=null, routeDrawn=false;
+const FLAP_GLYPHS='上海北京西安成都重庆深圳广州东南中华城站';
+function flip(delay){
+  const tiles=[...document.querySelectorAll('#flap .flapch')];
+  tiles.forEach((el,k)=>{
+    const target=el.textContent; let n=0;
+    setTimeout(()=>{
+      el.classList.add('spin');
+      const it=setInterval(()=>{
+        if(++n>6+k*4){clearInterval(it);el.textContent=target;el.classList.remove('spin');return}
+        el.textContent=FLAP_GLYPHS[Math.floor(Math.random()*FLAP_GLYPHS.length)];
+      },55);
+    },delay);
+  });
+}
+function applyCityAccent(){
+  const p=phase();
+  const c=p.when==='before'?STAYS[0].c:p.when==='after'?STAYS[STAYS.length-1].c:p.day.c;
+  document.documentElement.style.setProperty('--accent',`var(--c-${c})`);
+}
+
 /* ---------- Itinerary ---------- */
 function renderItinerary(){
   const p=phase();
@@ -374,6 +412,10 @@ function renderItinerary(){
     +(booked.length?`<div class="note"><b>Bookings today</b>${booked.map(x=>`<div style="margin-top:6px">${esc(x.text)}${meta(x)}</div>`).join('')}</div>`:'');
 
   const cIdx=STAYS.indexOf(stay);
+  const prog=p.when==='before'?0:p.when==='after'?1:cIdx/(STAYS.length-1);
+  const animRoute=!routeDrawn&&!REDUCED&&prog>0;
+  const stampNow=p.when==='during'&&!REDUCED&&!sim&&store.get('cn-stamp-day','')!==p.day.k;
+  if(stampNow)store.set('cn-stamp-day',p.day.k);
   const route=STAYS.map((s,i)=>{
     let cls='';
     if(p.when==='after'||(p.when==='during'&&i<cIdx))cls='past';
@@ -402,8 +444,8 @@ function renderItinerary(){
     <article class="ticket" style="--cc:var(--c-${stay.c})">
       <div class="ticket-main">
         <div><div class="eyebrow">${esc(label)}</div>
-          <div class="big-zh">${city.zh}</div><div class="big-py">${city.py} · ${city.en}</div></div>
-        <div class="stamp"><span><span class="zh">${stampZh}</span><small>${stampEn}</small></span></div>
+          <div class="big-zh" id="flap" aria-label="${city.zh}">${[...city.zh].map(ch=>`<span class="flapch">${ch}</span>`).join('')}</div><div class="big-py">${city.py} · ${city.en}</div></div>
+        <div class="stamp${stampNow?' thump':''}"><span><span class="zh">${stampZh}</span><small>${stampEn}</small></span></div>
       </div>
       <div class="perf"></div>
       <div class="ticket-foot">
@@ -413,10 +455,14 @@ function renderItinerary(){
       </div>
     </article>
     ${transit}
-    <div class="route" aria-label="Route"><ol>${route}</ol></div>
+    <div class="route${animRoute?' pending':''}" aria-label="Route"><ol><span class="fill" id="rfill"></span>${route}</ol></div>
     <h2>Day by day</h2>
     <div class="days">${rows}</div>
     <div class="sim"><label for="simdate">Preview a date</label><input type="date" id="simdate" min="2026-10-01" max="2026-11-10" value="${sim||''}"><button class="btn" id="simreset">Use real today</button></div>`;
+  const fill=$('#rfill'),W=85.72*prog;
+  if(animRoute){routeDrawn=true;requestAnimationFrame(()=>requestAnimationFrame(()=>{fill.style.width=W+'%';const r=$('.route');setTimeout(()=>r&&r.classList.remove('pending'),700)}))}
+  else{fill.style.transition='none';fill.style.width=W+'%';routeDrawn=true}
+  if(shownCity!==stay.c){const first=shownCity===null;shownCity=stay.c;if(!REDUCED)flip(first?280:0)}
   $('#simdate').onchange=e=>{sim=e.target.value||null;renderAll()};
   $('#simreset').onclick=()=>{sim=null;renderAll()};
 }
@@ -558,14 +604,16 @@ function toast(m){const t=document.createElement('div');t.className='toast';t.te
 const TABS=['itinerary','stays','plan','dictionary'];
 function go(tab,scroll){
   if(!TABS.includes(tab))tab='itinerary';
+  const prev=store.get('cn-tab',null);
   TABS.forEach(t=>{$('#p-'+t).hidden=t!==tab;$('#t-'+t).setAttribute('aria-selected',t===tab)});
+  if(scroll&&prev!==tab){const el=$('#p-'+tab);el.classList.remove('enter');void el.offsetWidth;el.classList.add('enter')}
   store.set('cn-tab',tab);
   window.scrollTo(0,0);
   if(scroll&&tab==='plan'){const el=document.getElementById('day-'+today());if(el)el.scrollIntoView({block:'start'})}
 }
 document.querySelectorAll('.tab').forEach(b=>b.onclick=()=>go(b.dataset.tab,true));
 
-function renderAll(){setStatus();renderItinerary();renderStays();renderPlan()}
+function renderAll(){applyCityAccent();setStatus();renderItinerary();renderStays();renderPlan()}
 renderAll();initDict();
 const h=(location.hash||'').slice(1);
 go(TABS.includes(h)?h:store.get('cn-tab','itinerary'),false);
