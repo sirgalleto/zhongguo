@@ -183,6 +183,30 @@ nav.tabs{position:fixed;left:0;right:0;bottom:0;z-index:6;background:color-mix(i
 .show .en{font-size:15px;color:var(--muted)}
 .toast{position:fixed;left:50%;bottom:calc(84px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--ink);color:var(--paper);padding:8px 14px;border-radius:4px;font-family:var(--f-mono);font-size:11px;letter-spacing:.06em;text-transform:uppercase;z-index:30}
 
+
+/* Journey board */
+.board{position:sticky;top:calc(env(safe-area-inset-top,0px) + var(--topbar,45px));z-index:4;background:var(--paper);margin:-20px -20px 0;padding:16px 20px 14px;border-bottom:1px solid var(--line)}
+.board-top{display:flex;justify-content:space-between;align-items:baseline;gap:12px}
+.b-idx{font-size:11px;color:var(--muted);letter-spacing:.08em}
+.board-row{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-top:12px}
+.board .big-zh{margin-top:0}
+.board .big-py{margin-top:10px}
+.board .route{margin-top:16px;padding:0}
+.railbtn{background:none;border:0;padding:0;display:flex;flex-direction:column;align-items:center;gap:6px;color:inherit;width:100%}
+.route li.view .dot{border-color:var(--accent);border-width:2px;transform:scale(1.2)}
+.route li.view .zh{color:var(--accent)}
+.stops{display:flex;flex-direction:column;padding-bottom:30vh}
+.stop{min-height:62vh;padding:32px 0 8px;display:flex;flex-direction:column;gap:12px}
+.stop-head{display:flex;align-items:baseline;gap:12px}
+.stop-head .n{font-size:11px;color:var(--muted);letter-spacing:.08em}
+.stop-head .zh{font-size:32px;font-weight:300;color:var(--cc);letter-spacing:.08em;line-height:1}
+.stop-head b{font-weight:500;font-size:16px}
+.stop-meta{font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.stop-hotel{font-size:14px;display:flex;flex-direction:column;gap:2px}
+.stop-hotel .mono{font-size:11px;color:var(--muted)}
+.stop.done .stop-head .zh{opacity:.55}
+.leg{display:flex;flex-wrap:wrap;align-items:center;gap:6px 10px;font-family:var(--f-mono);font-size:11.5px;color:var(--muted);padding-top:10px}
+.leg .arrow{color:var(--cc);font-size:14px}
 @media (prefers-reduced-motion:no-preference){
   .day.today,.pday.today{animation:pulse 1.6s ease-out 1}
   @keyframes pulse{from{box-shadow:0 0 0 6px var(--stamp-soft)}}
@@ -359,7 +383,6 @@ function setStatus(){
 
 /* ---------- Motion ---------- */
 const REDUCED=(()=>{try{return matchMedia('(prefers-reduced-motion: reduce)').matches}catch(e){return false}})();
-let shownCity=null, routeDrawn=false;
 const FLAP_GLYPHS='上海北京西安成都重庆深圳广州东南中华城站';
 function flip(delay){
   const tiles=[...document.querySelectorAll('#flap .flapch')];
@@ -385,87 +408,123 @@ function applyCityAccent(){
   document.documentElement.style.setProperty('--accent',`var(--c-${c})`);
 }
 
-/* ---------- Itinerary ---------- */
-function renderItinerary(){
-  const p=phase();
-  let stay,label,stampZh,stampEn,foot='';
-  if(p.when==='before'){
-    stay=STAYS[0];label=`First stop · ${fmt(START,{weekday:'long',month:'short',day:'numeric'})}`;
-    stampZh='出发';stampEn=`in ${p.n}d`;
-  }else if(p.when==='after'){
-    stay=STAYS[STAYS.length-1];label='Last stop';stampZh='到达';stampEn='done';
-  }else{
-    const d=p.day;stay=d.si>=0?STAYS[d.si]:STAYS[STAYS.length-1];
-    label=d.kind==='move'?`Travel day · from ${CITIES[d.from].en}`:d.kind==='depart'?'Departure day':`Today · ${fmt(d.k,{weekday:'long',month:'short',day:'numeric'})}`;
-    stampZh='今天';stampEn='today';
-  }
-  const city=CITIES[stay.c];
-  const nights=(toUTC(stay.out)-toUTC(stay.in))/DAY;
-  let nightTxt=`${nights} nights`;
-  if(p.when==='during'&&p.day.kind!=='depart'){const n=(toUTC(p.day.k)-toUTC(stay.in))/DAY+1;nightTxt=`Night ${n} of ${nights}`}
-  const nextStay=STAYS[STAYS.indexOf(stay)+1];
-  const nextTxt=p.when==='after'?'·':nextStay?`${short(stay.out)} → ${CITIES[nextStay.c].en}`:`${short(END)} → beach`;
-  const tr=p.when==='during'&&TRANSIT[p.day.k];
-  const booked=p.when==='during'&&PLAN[p.day.k]?PLAN[p.day.k].i.map(norm).filter(x=>x.status):[];
-  const transit=(tr?`<div class="note"><b>Getting there:</b> ${esc(tr.text)}${tr.status?`<span class="meta">${badge(tr.status)}</span>`:''}</div>`:'')
-    +(booked.length?`<div class="note"><b>Bookings today</b>${booked.map(x=>`<div style="margin-top:6px">${esc(x.text)}${meta(x)}</div>`).join('')}</div>`:'');
+/* ---------- Itinerary: scroll journey ----------
+   A sticky departure board sits on top. Each city is a section below it.
+   As a section reaches the board, the board flips to that city and the accent follows.
+   The seal shows (and stamps) only while the board is on today's city. */
+let viewIdx=-1, curIdx=-1, journeyScrolled=false;
+const stopOf=d=>d.si>=0?d.si:STAYS.length-1;
+const range=s=>`${short(s.in)} → ${short(s.out)}`;
+const nightsOf=s=>(toUTC(s.out)-toUTC(s.in))/DAY;
 
-  const cIdx=STAYS.indexOf(stay);
-  const prog=p.when==='before'?0:p.when==='after'?1:cIdx/(STAYS.length-1);
-  const animRoute=!routeDrawn&&!REDUCED&&prog>0;
-  const stampNow=!REDUCED&&(sim?true:store.get('cn-stamp-day','')!==today());
-  if(stampNow&&!sim)store.set('cn-stamp-day',today());
-  const route=STAYS.map((s,i)=>{
-    let cls='';
-    if(p.when==='after'||(p.when==='during'&&i<cIdx))cls='past';
-    if(p.when==='during'&&i===cIdx)cls='now';
-    return `<li class="${cls}" style="--cc:var(--c-${s.c})"><span class="dot"></span><span class="zh">${CITIES[s.c].zh}</span><small>${short(s.in)}</small></li>`;
+function renderItinerary(){
+  const p=phase(), t=today();
+  curIdx=p.when==='during'?stopOf(p.day):-1;
+  const startIdx=curIdx>=0?curIdx:p.when==='after'?STAYS.length-1:0;
+  const prog=p.when==='before'?0:p.when==='after'?1:curIdx/(STAYS.length-1);
+
+  const rail=STAYS.map((s,i)=>{
+    const cls=(p.when==='after'||i<curIdx)?'past':i===curIdx?'now':'';
+    return `<li class="${cls}" style="--cc:var(--c-${s.c})"><button class="railbtn" data-go="${i}" aria-label="Go to ${CITIES[s.c].en}"><span class="dot"></span><span class="zh">${CITIES[s.c].zh}</span></button></li>`;
   }).join('');
 
-  const t=today();
-  const rows=DAYS.map(d=>{
-    const c=CITIES[d.c];
-    const isT=d.k===t, past=d.k<t;
-    let what=`<b>${c.en}</b>`, sub=PLAN[d.k]?PLAN[d.k].t:'', tag='';
-    const nc=PLAN[d.k]?PLAN[d.k].i.map(norm).filter(x=>x.status==='confirmed').length:0;
-    if(nc)sub+=` · ${nc} confirmed`;
-    if(d.kind==='arrive'){tag='<span class="tag move">Arrive</span>'}
-    else if(d.kind==='move'){what=`<b>${CITIES[d.from].en} → ${c.en}</b>`;tag='<span class="tag move">Train</span>'}
-    else if(d.kind==='depart'){what=`<b>Leave ${c.en}</b>`;tag='<span class="tag move">Depart</span>'}
-    if(isT)tag='<span class="tag">Today</span>';
-    return `<div class="day${isT?' today':''}${past?' past':''}" style="--cc:var(--c-${d.c})" ${isT?'id="today-row"':''}>
-      <div class="d mono">${fmt(d.k,{weekday:'short'})}<b>${fmt(d.k,{month:'short',day:'numeric'}).replace(' ',' ')}</b></div>
-      <span class="bar"></span>
-      <div class="what">${what}<span>${esc(sub)}</span></div>${tag}</div>`;
+  const stops=STAYS.map((s,i)=>{
+    const c=CITIES[s.c], n=nightsOf(s);
+    const days=DAYS.filter(d=>stopOf(d)===i).map(d=>{
+      const isT=d.k===t, past=d.k<t;
+      let what=`<b>${esc(PLAN[d.k]?PLAN[d.k].t:c.en)}</b>`, tag='';
+      if(d.kind==='arrive')tag='<span class="tag move">Arrive</span>';
+      else if(d.kind==='move')tag='<span class="tag move">Train</span>';
+      else if(d.kind==='depart')tag='<span class="tag move">Depart</span>';
+      if(isT)tag='<span class="tag">Today</span>';
+      const nc=PLAN[d.k]?PLAN[d.k].i.map(norm).filter(x=>x.status==='confirmed').length:0;
+      return `<div class="day${isT?' today':''}${past?' past':''}" style="--cc:var(--c-${d.c})">
+        <div class="d mono">${fmt(d.k,{weekday:'short'})}<b>${fmt(d.k,{month:'short',day:'numeric'})}</b></div>
+        <span class="bar"></span>
+        <div class="what">${what}<span>Day ${DAYS.indexOf(d)+1}${nc?` · ${nc} confirmed`:''}</span></div>${tag}</div>`;
+    }).join('');
+    const bookedToday=(i===curIdx&&PLAN[t])?PLAN[t].i.map(norm).filter(x=>x.status):[];
+    const next=STAYS[i+1], leg=next?TRANSIT[next.in]:TRANSIT[END];
+    return `<section class="stop${i===curIdx?' current':''}${(p.when==='after'||i<curIdx)?' done':''}" data-i="${i}" id="stop-${s.c}" style="--cc:var(--c-${s.c})">
+      <div class="stop-head"><span class="n mono">${String(i+1).padStart(2,'0')}</span><span class="zh">${c.zh}</span><b>${c.en}</b></div>
+      <div class="stop-meta mono">${range(s)} · ${n} night${n>1?'s':''}</div>
+      <div class="stop-hotel">${esc(s.name.split(' (')[0])}<span class="mono">${esc(s.room)}</span></div>
+      ${bookedToday.length?`<div class="note"><b>Bookings today</b>${bookedToday.map(x=>`<div style="margin-top:6px">${esc(x.text)}${meta(x)}</div>`).join('')}</div>`:''}
+      <div class="days">${days}</div>
+      ${leg?`<div class="leg"><span class="arrow" aria-hidden="true">↓</span><span>${esc(leg.text)}</span>${badge(leg.status)}</div>`:''}
+    </section>`;
   }).join('');
 
   $('#p-itinerary').innerHTML=`
-    <article class="ticket" style="--cc:var(--c-${stay.c})">
-      <div class="ticket-main">
-        <div><div class="eyebrow">${esc(label)}</div>
-          <div class="big-zh" id="flap" aria-label="${city.zh}">${[...city.zh].map(ch=>`<span class="flapch">${ch}</span>`).join('')}</div><div class="big-py">${city.py} · ${city.en}</div></div>
-        <div class="stamp${stampNow?' thump':''}"><span><span class="zh">${stampZh}</span><small>${stampEn}</small></span></div>
+    <div class="board" id="board">
+      <div class="board-top"><span class="eyebrow" id="b-label"></span><span class="mono b-idx" id="b-idx"></span></div>
+      <div class="board-row">
+        <div class="big-zh" id="flap"><span class="flapch"></span><span class="flapch"></span></div>
+        <div class="stamp" id="seal" hidden><span class="zh">今天</span></div>
       </div>
-      <div class="perf"></div>
-      <div class="ticket-foot">
-        <div class="kv"><div class="k">Staying at</div><div class="v">${esc(stay.name.split(' (')[0])}</div></div>
-        <div class="kv"><div class="k">Nights</div><div class="v">${nightTxt}</div></div>
-        <div class="kv"><div class="k">Next move</div><div class="v">${nextTxt}</div></div>
-      </div>
-    </article>
-    ${transit}
-    <div class="route${animRoute?' pending':''}" aria-label="Route"><ol><span class="fill" id="rfill"></span>${route}</ol></div>
-    <h2><span class="zh">每日</span>Day by day</h2>
-    <div class="days">${rows}</div>
+      <div class="big-py" id="b-py"></div>
+      <div class="route"><ol><span class="fill" id="rfill"></span>${rail}</ol></div>
+    </div>
+    <div class="stops">${stops}</div>
     <div class="sim"><label for="simdate">Preview a date</label><input type="date" id="simdate" min="2026-10-01" max="2026-11-10" value="${sim||''}"><button class="btn" id="simreset">Use real today</button></div>`;
-  const fill=$('#rfill'),W=85.72*prog;
-  if(animRoute){routeDrawn=true;requestAnimationFrame(()=>requestAnimationFrame(()=>{fill.style.width=W+'%';const r=$('.route');setTimeout(()=>r&&r.classList.remove('pending'),700)}))}
-  else{fill.style.transition='none';fill.style.width=W+'%';routeDrawn=true}
-  if(shownCity!==stay.c){const first=shownCity===null;shownCity=stay.c;if(!REDUCED){if(first)fontsReady.then(()=>flip(300));else flip(0)}}
+
+  /* initial board state, no animation */
+  const tiles=[...document.querySelectorAll('#flap .flapch')];
+  const sc=CITIES[STAYS[startIdx].c];
+  tiles.forEach((el,k)=>{el.textContent=el.dataset.ch=[...sc.zh][k]||''});
+  viewIdx=-1; setView(startIdx,false);
+  if(!REDUCED)fontsReady.then(()=>{flip(300);if(startIdx===curIdx)setTimeout(thump,1250)});
+
+  const fill=$('#rfill');fill.style.transition='none';fill.style.width='0%';
+  requestAnimationFrame(()=>requestAnimationFrame(()=>{fill.style.transition='';fill.style.width=(85.72*prog)+'%'}));
+
   $('#flap').onclick=()=>{if(!REDUCED)flip(0)};
-  $('.stamp').onclick=thump;
-  $('#simdate').onchange=e=>{sim=e.target.value||null;renderAll()};
-  $('#simreset').onclick=()=>{sim=null;renderAll()};
+  $('#seal').onclick=thump;
+  document.querySelectorAll('.railbtn').forEach(b=>b.onclick=()=>scrollToStop(+b.dataset.go,true));
+  $('#simdate').onchange=e=>{sim=e.target.value||null;journeyScrolled=false;renderAll();scrollToStop(curIdx>=0?curIdx:0,false)};
+  $('#simreset').onclick=()=>{sim=null;journeyScrolled=false;renderAll();scrollToStop(curIdx>=0?curIdx:0,false)};
+}
+
+function setView(i,animate){
+  if(i===viewIdx||i<0)return;
+  viewIdx=i;
+  const s=STAYS[i], c=CITIES[s.c], n=nightsOf(s), p=phase();
+  document.documentElement.style.setProperty('--accent',`var(--c-${s.c})`);
+  let label=`${range(s)} · ${n} nights`;
+  if(i===curIdx&&p.day.kind!=='depart'){const k=(toUTC(p.day.k)-toUTC(s.in))/DAY+1;label=`Today · night ${k} of ${n}`}
+  else if(i===curIdx)label='Today · departure';
+  $('#b-label').textContent=label;
+  $('#b-idx').textContent=`${String(i+1).padStart(2,'0')} / ${String(STAYS.length).padStart(2,'0')}`;
+  $('#b-py').textContent=`${c.py} · ${c.en}`;
+  $('#flap').setAttribute('aria-label',c.zh);
+  document.querySelectorAll('.route li').forEach((li,k)=>li.classList.toggle('view',k===i));
+  [...document.querySelectorAll('#flap .flapch')].forEach((el,k)=>{el.dataset.ch=[...c.zh][k]||''});
+  if(animate&&!REDUCED)flip(0);
+  else document.querySelectorAll('#flap .flapch').forEach(el=>{if(!el._flip)el.textContent=el.dataset.ch});
+  const seal=$('#seal'), isCur=i===curIdx;
+  seal.hidden=!isCur;
+  if(isCur&&animate)thump();
+}
+
+function stopUnderBoard(){
+  const board=$('#board'); if(!board)return -1;
+  const line=board.getBoundingClientRect().bottom+Math.min(140,innerHeight*.18);
+  let idx=0;
+  document.querySelectorAll('.stop').forEach(sec=>{if(sec.getBoundingClientRect().top<=line)idx=+sec.dataset.i});
+  return idx;
+}
+let ticking=false;
+window.addEventListener('scroll',()=>{
+  if(ticking||$('#p-itinerary').hidden)return; ticking=true;
+  requestAnimationFrame(()=>{ticking=false;setView(stopUnderBoard(),true)});
+},{passive:true});
+
+function scrollToStop(i,smooth){
+  const sec=document.querySelector(`.stop[data-i="${i}"]`); if(!sec)return;
+  if(i===0){window.scrollTo({top:0,behavior:smooth&&!REDUCED?'smooth':'auto'});return}
+  const board=$('#board'), top=$('.top');
+  const offset=(top?top.offsetHeight:0)+(board?board.offsetHeight:0)+8;
+  window.scrollTo({top:sec.getBoundingClientRect().top+scrollY-offset,behavior:smooth&&!REDUCED?'smooth':'auto'});
 }
 
 /* ---------- Stays ---------- */
@@ -611,10 +670,16 @@ function go(tab,scroll){
   store.set('cn-tab',tab);
   window.scrollTo(0,0);
   if(scroll&&tab==='plan'){const el=document.getElementById('day-'+today());if(el)el.scrollIntoView({block:'start'})}
+  if(tab==='itinerary'){
+    if(viewIdx>=0)document.documentElement.style.setProperty('--accent',`var(--c-${STAYS[viewIdx].c})`);
+    if(!journeyScrolled&&curIdx>0){journeyScrolled=true;requestAnimationFrame(()=>scrollToStop(curIdx,false))}
+  }else applyCityAccent();
 }
 document.querySelectorAll('.tab').forEach(b=>b.onclick=()=>go(b.dataset.tab,true));
 
-function renderAll(){applyCityAccent();setStatus();renderItinerary();renderStays();renderPlan()}
+function setTopbar(){const t=$('.top');if(t)document.documentElement.style.setProperty('--topbar',t.offsetHeight+'px')}
+setTopbar();window.addEventListener('resize',setTopbar);
+function renderAll(){applyCityAccent();setStatus();renderItinerary();renderStays();renderPlan();if(!$('#p-itinerary').hidden&&viewIdx>=0)document.documentElement.style.setProperty('--accent',`var(--c-${STAYS[viewIdx].c})`)}
 renderAll();initDict();
 const h=(location.hash||'').slice(1);
 go(TABS.includes(h)?h:store.get('cn-tab','itinerary'),false);
