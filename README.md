@@ -12,6 +12,13 @@ Phone app for the Oct 11 to Nov 4 China trip: itinerary, accommodation, daily pl
 2. `python3 build.py`
 3. Commit and push
 
+## City photos
+- `scripts/image_queries.json` lists what to show per city (label + Commons search).
+- The `Fetch city photos` GitHub Action downloads one CC0 / PD / CC BY / CC BY-SA photo per query
+  from Wikimedia Commons into `docs/img/`, with credits in `docs/img/credits.json`.
+- It runs on any push that changes those files, or manually from the Actions tab.
+- To swap a photo: change its query, or delete the jpg and its credits entry, then push.
+
 ## Deploy
 Live at https://zhongguo.galle.to
 

@@ -184,6 +184,23 @@ nav.tabs{position:fixed;left:0;right:0;bottom:0;z-index:6;background:color-mix(i
 .toast{position:fixed;left:50%;bottom:calc(84px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--ink);color:var(--paper);padding:8px 14px;border-radius:4px;font-family:var(--f-mono);font-size:11px;letter-spacing:.06em;text-transform:uppercase;z-index:30}
 
 
+
+/* Photo strips in Plan */
+.gallery:empty{display:none}
+.gallery{display:flex;flex-direction:column;gap:10px;margin-top:8px}
+.g-head{display:flex;align-items:baseline;gap:10px}
+.g-head .zh{font-size:22px;font-weight:300;color:var(--cc);letter-spacing:.08em}
+.g-head .mono{font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+.g-strip{display:flex;gap:10px;overflow-x:auto;scroll-snap-type:x mandatory;margin-inline:-20px;padding:0 20px 2px;scroll-padding-inline:20px;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+.g-strip::-webkit-scrollbar{display:none}
+.g-item{flex:none;width:min(80vw,360px);margin:0;scroll-snap-align:start;display:flex;flex-direction:column;gap:6px}
+.g-item img{width:100%;aspect-ratio:4/3;object-fit:cover;border-radius:6px;background:var(--faint);border:1px solid var(--line);display:block;opacity:0;transition:opacity .5s ease}
+.g-item img.in{opacity:1}
+.g-item figcaption{display:flex;flex-direction:column;gap:1px;min-width:0}
+.g-item figcaption b{font-weight:500;font-size:14px}
+.g-item figcaption a{font-family:var(--f-mono);font-size:10px;color:var(--muted);text-decoration:none;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+@media (prefers-reduced-motion:reduce){.g-item img{transition:none;opacity:1}}
+
 /* Journey board */
 .board{position:sticky;top:calc(env(safe-area-inset-top,0px) + var(--topbar,45px));z-index:4;background:var(--paper);margin:-20px -20px 0;padding:16px 20px 14px;border-bottom:1px solid var(--line)}
 .board-top{display:flex;justify-content:space-between;align-items:baseline;gap:12px}
@@ -569,11 +586,14 @@ function renderPlan(){
   const done=store.get('cn-plan-done',{});
   const t=today();
   const chips=['all',...STAYS.map(s=>s.c)].map(c=>`<button class="chip" data-f="${c}" aria-pressed="${planFilter===c}">${c==='all'?'All days':CITIES[c].en}</button>`).join('');
+  let lastCity=null;
   const cards=DAYS.filter(d=>planFilter==='all'||d.c===planFilter||(d.from&&d.from===planFilter)).map((d,i)=>{
+    const gal=d.c!==lastCity?`<div class="gallery" data-city="${d.c}" style="--cc:var(--c-${d.c})"></div>`:'';
+    lastCity=d.c;
     const p=PLAN[d.k]||{t:'',i:[]};const c=CITIES[d.c];
     const n=DAYS.indexOf(d)+1;
     const items=p.i.map(norm).map(it=>{const id=`${d.k}-${hash(it.text)}`;return `<li><label><input type="checkbox" id="pc-${id}" data-id="${id}" ${done[id]?'checked':''}><span><span class="txt">${esc(it.text)}</span>${meta(it)}</span></label></li>`}).join('');
-    return `<article class="pday${d.k===t?' today':''}${d.k<t?' past':''}" style="--cc:var(--c-${d.c})" id="day-${d.k}">
+    return gal+`<article class="pday${d.k===t?' today':''}${d.k<t?' past':''}" style="--cc:var(--c-${d.c})" id="day-${d.k}">
       <header><span class="zh">${c.zh}</span><div><b>${esc(p.t)}</b><span>Day ${n} · ${fmt(d.k,{weekday:'long',month:'short',day:'numeric'})}</span></div>${d.k===t?'<span class="tag" style="background:var(--stamp);border-color:var(--stamp);color:var(--card)">Today</span>':''}</header>
       <ul>${items}</ul>
       ${TRANSIT[d.k]&&d.kind!=='arrive'?`<div class="transit"><span>${esc(TRANSIT[d.k].text)}</span>${badge(TRANSIT[d.k].status)}</div>`:''}
@@ -581,8 +601,23 @@ function renderPlan(){
     </article>`;
   }).join('');
   $('#p-plan').innerHTML=`<div class="chips" role="group" aria-label="Filter by city">${chips}</div>${cards}`;
+  fillGalleries();
   $('#p-plan').querySelectorAll('.chip').forEach(b=>b.onclick=()=>{planFilter=b.dataset.f;store.set('cn-plan-filter',planFilter);renderPlan()});
   $('#p-plan').querySelectorAll('input[type=checkbox]').forEach(cb=>cb.onchange=()=>{const d=store.get('cn-plan-done',{});if(cb.checked)d[cb.dataset.id]=1;else delete d[cb.dataset.id];store.set('cn-plan-done',d)});
+}
+
+/* ---------- Photos (docs/img, fetched by the GitHub Action) ---------- */
+let PHOTOS=null;
+fetch('img/credits.json').then(r=>r.ok?r.json():[]).then(list=>{PHOTOS=list;fillGalleries()}).catch(()=>{PHOTOS=[]});
+function fillGalleries(){
+  if(!PHOTOS||!PHOTOS.length)return;
+  document.querySelectorAll('.gallery[data-city]').forEach(g=>{
+    const c=g.dataset.city, list=PHOTOS.filter(p=>p.city===c);
+    if(!list.length||g.childElementCount)return;
+    g.innerHTML=`<div class="g-head"><span class="zh">${CITIES[c].zh}</span><span class="mono">${CITIES[c].en} · ${list.length} photos</span></div>
+      <div class="g-strip">${list.map(p=>`<figure class="g-item"><img src="img/${esc(p.file)}" alt="${esc(p.label)}" loading="lazy" decoding="async" onload="this.classList.add('in')">
+        <figcaption><b>${esc(p.label)}</b><a href="${esc(p.page)}" target="_blank" rel="noopener">${esc(p.author)} · ${esc(p.license)}</a></figcaption></figure>`).join('')}</div>`;
+  });
 }
 
 /* ---------- Dictionary ---------- */
