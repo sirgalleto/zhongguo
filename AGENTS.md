@@ -75,6 +75,8 @@ python -m http.server 8000   # open http://localhost:8000, try Itinerary → "Pr
 
 The "Preview a date" control simulates any day of the trip (city, board, seal, status).
 
+Always check the real site (`index.html` via the local server), not only the claude.ai preview. The preview wraps the page in its own reset, so it can hide missing base CSS like the `[hidden]` rule at the top of `styles.css`.
+
 ## Preview on claude.ai
 
 `python scripts/preview.py` writes `.artifact.html`, the whole app in one file, for publishing as a claude.ai artifact. It is git-ignored and not used by the real site.
