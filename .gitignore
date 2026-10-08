@@ -1,3 +1,4 @@
 china-trip-pwa.zip
 __pycache__/
 .DS_Store
+*.bundle
