@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#08090C">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="China Trip">
+<title>China Trip 2026</title>
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500&family=Noto+Sans+SC:wght@300;400;500;700&display=swap">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<header class="top">
+  <div class="top-in">
+    <div class="brand"><b class="zh">中国</b><span>Oct 11 → Nov 4</span></div>
+    <span class="status" id="status">…</span>
+  </div>
+</header>
+
+<main>
+  <section role="tabpanel" id="p-itinerary" aria-labelledby="t-itinerary"></section>
+  <section role="tabpanel" id="p-stays" aria-labelledby="t-stays" hidden></section>
+  <section role="tabpanel" id="p-plan" aria-labelledby="t-plan" hidden></section>
+  <section role="tabpanel" id="p-dictionary" aria-labelledby="t-dictionary" hidden></section>
+</main>
+
+<nav class="tabs" aria-label="Sections">
+  <div class="tabs-in" role="tablist">
+    <button class="tab" role="tab" id="t-itinerary" data-tab="itinerary" aria-controls="p-itinerary"><span class="zh">行程</span><small>Itinerary</small></button>
+    <button class="tab" role="tab" id="t-stays" data-tab="stays" aria-controls="p-stays"><span class="zh">住宿</span><small>Accommodation</small></button>
+    <button class="tab" role="tab" id="t-plan" data-tab="plan" aria-controls="p-plan"><span class="zh">计划</span><small>Plan</small></button>
+    <button class="tab" role="tab" id="t-dictionary" data-tab="dictionary" aria-controls="p-dictionary"><span class="zh">词典</span><small>Dictionary</small></button>
+  </div>
+</nav>
+
+<div class="show" id="show" hidden>
+  <div class="hz" id="show-hz"></div>
+  <div class="py" id="show-py"></div>
+  <div class="en" id="show-en"></div>
+  <div style="display:flex;gap:10px"><button class="btn" id="show-say">Play audio</button><button class="btn solid" id="show-close">Close</button></div>
+</div>
+
+<script src="trip-data.js"></script>
+<script src="phrases.js"></script>
+<script src="app.js"></script>
+</body>
+</html>

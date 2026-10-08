@@ -1,4 +1,6 @@
-china-trip-pwa.zip
+dist/
+.artifact.html
+*.bundle
+*.zip
 __pycache__/
 .DS_Store
-*.bundle

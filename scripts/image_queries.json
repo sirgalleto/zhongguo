@@ -1,0 +1,128 @@
+{
+  "sh": [
+    {
+      "label": "Lujiazui at night",
+      "q": "Lujiazui skyline night"
+    },
+    {
+      "label": "The Bund",
+      "q": "The Bund Shanghai waterfront"
+    },
+    {
+      "label": "Wukang Mansion",
+      "q": "Wukang Mansion Shanghai"
+    },
+    {
+      "label": "Yu Garden",
+      "q": "Yu Garden Shanghai"
+    }
+  ],
+  "bj": [
+    {
+      "label": "Forbidden City",
+      "q": "Forbidden City Beijing"
+    },
+    {
+      "label": "Temple of Heaven",
+      "q": "Hall of Prayer for Good Harvests"
+    },
+    {
+      "label": "Mutianyu Great Wall",
+      "q": "Mutianyu Great Wall"
+    },
+    {
+      "label": "798 Art Zone",
+      "q": "798 Art Zone Beijing"
+    }
+  ],
+  "xa": [
+    {
+      "label": "Terracotta Army",
+      "q": "Terracotta Army pit"
+    },
+    {
+      "label": "City Wall",
+      "q": "Xi'an City Wall South Gate"
+    },
+    {
+      "label": "Drum Tower at night",
+      "q": "Drum Tower Xi'an night"
+    },
+    {
+      "label": "Big Wild Goose Pagoda",
+      "q": "Giant Wild Goose Pagoda"
+    }
+  ],
+  "cd": [
+    {
+      "label": "Giant pandas",
+      "q": "Giant panda Chengdu Research Base"
+    },
+    {
+      "label": "Kuanzhai Alley",
+      "q": "Kuanzhai Alley Chengdu"
+    },
+    {
+      "label": "Taikoo Li",
+      "q": "Sino-Ocean Taikoo Li Chengdu"
+    },
+    {
+      "label": "Wenshu Monastery",
+      "q": "Wenshu Monastery Chengdu"
+    }
+  ],
+  "cq": [
+    {
+      "label": "Hongyadong",
+      "q": "Hongyadong Chongqing"
+    },
+    {
+      "label": "Liziba monorail",
+      "q": "Liziba Station"
+    },
+    {
+      "label": "Yangtze River Cableway",
+      "q": "Yangtze River Cableway Chongqing"
+    },
+    {
+      "label": "Chongqing at night",
+      "q": "Chongqing skyline night"
+    }
+  ],
+  "sz": [
+    {
+      "label": "Ping An Finance Centre",
+      "q": "Ping An Finance Center Shenzhen"
+    },
+    {
+      "label": "Shenzhen Bay",
+      "q": "Shenzhen Bay Sports Center"
+    },
+    {
+      "label": "OCT Loft",
+      "q": "OCT Loft Shenzhen"
+    },
+    {
+      "label": "Futian skyline",
+      "q": "Futian skyline Shenzhen"
+    }
+  ],
+  "gz": [
+    {
+      "label": "Canton Tower",
+      "q": "Canton Tower Guangzhou"
+    },
+    {
+      "label": "Shamian Island",
+      "q": "Our Lady of Lourdes Chapel Shamian"
+    },
+    {
+      "label": "Chen Clan Ancestral Hall",
+      "q": "Chen Clan Ancestral Hall Guangzhou"
+    },
+    {
+      "label": "Guangzhou Opera House",
+      "q": "Guangzhou Opera House"
+    }
+  ]
+}
