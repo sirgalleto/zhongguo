@@ -6,53 +6,52 @@ Live at **https://zhongguo.galle.to**
 
 ## Structure
 
-```
-src/                      the site (plain HTML, CSS, JS; no framework)
-├── index.html
-├── styles.css
-├── trip-data.js          ← cities, hotels, trains, daily plan. Edit this for trip changes
-├── phrases.js            ← dictionary phrases
-├── app.js                rendering, animations, tabs
-├── sw.js                 offline cache (version stamped at build)
-├── manifest.webmanifest
-├── icons/
-└── img/                  city photos + credits.json (written by the photo workflow)
-scripts/
-├── build.py              src/ → dist/ (+ .artifact.html single-file preview)
-├── fetch_images.py       downloads Wikimedia Commons photos into src/img/
-└── image_queries.json    what photo to show per city
-.github/workflows/
-├── deploy.yml            builds and deploys to GitHub Pages on push to main
-└── images.yml            refreshes photos when the queries change
-```
+Plain static files, no build step. GitHub Pages serves the repo root as-is.
 
-`dist/` is a build output and is not committed.
+```
+index.html
+styles.css
+trip-data.js          ← cities, hotels, trains, daily plan. Edit this for trip changes
+phrases.js            ← dictionary phrases
+app.js                rendering, animations, tabs
+sw.js                 offline cache
+manifest.webmanifest
+icons/
+img/                  city photos + credits.json (written by the photo workflow)
+scripts/
+├── fetch_images.py   downloads Wikimedia Commons photos into img/
+├── image_queries.json  what photo to show per city
+└── preview.py        single-file version for the claude.ai preview only
+.github/workflows/images.yml   refreshes photos when the queries change
+```
 
 ## Common changes
 
 | Change | File |
 |---|---|
-| Add a booking, mark something confirmed | `src/trip-data.js` (`status: 'confirmed'`, `ref`) |
-| Add or remove a plan idea | `src/trip-data.js` → `PLAN` |
-| Add a phrase | `src/phrases.js` |
+| Add a booking, mark something confirmed | `trip-data.js` (`status: 'confirmed'`, `ref`) |
+| Add or remove a plan idea | `trip-data.js` → `PLAN` |
+| Add a phrase | `phrases.js` |
 | Swap a photo | `scripts/image_queries.json` (the workflow fetches it) |
 
 ## Local
 
 ```bash
-python scripts/build.py
-python -m http.server -d dist 8000   # http://localhost:8000
+python -m http.server 8000   # http://localhost:8000
 ```
 
 ## Deploy
 
-Push to `main`. The **Deploy to GitHub Pages** workflow builds `src/` and publishes `dist/`.
+Push to `main`. Pages settings: **Deploy from a branch → `main` / `(root)`**, custom domain `zhongguo.galle.to`, Enforce HTTPS.
+`.nojekyll` turns off Jekyll so files are served exactly as they are.
 
-One-time settings: **Settings → Pages → Source: GitHub Actions**, custom domain `zhongguo.galle.to`, Enforce HTTPS. With Actions deploys, the domain lives in Settings and no `CNAME` file is needed.
+## Offline
+
+`sw.js` caches the app and photos. It fetches fresh files when online and falls back to the cache offline, so normal edits show up on their own. Bump `CACHE` in `sw.js` to force every phone to re-download everything.
 
 ## Photos
 
-Freely licensed photos (CC0, public domain, CC BY, CC BY-SA) from Wikimedia Commons, credited in the app and in `src/img/credits.json`.
+Freely licensed photos (CC0, public domain, CC BY, CC BY-SA) from Wikimedia Commons, credited in the app and in `img/credits.json`. The `Fetch city photos` workflow is the only GitHub Action, and it exists because downloading needs a machine with internet access.
 
 ## Install on the phone
 

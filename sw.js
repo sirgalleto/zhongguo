@@ -1,4 +1,4 @@
-const CACHE='china-trip-__VERSION__'; // replaced by scripts/build.py
+const CACHE='china-trip-v2'; // bump to force every phone to re-download everything
 const SHELL=['./','./index.html','./styles.css','./trip-data.js','./phrases.js','./app.js','./manifest.webmanifest','./icons/icon-192.png','./icons/icon-512.png','./icons/apple-touch-icon.png'];
 self.addEventListener('install',e=>{e.waitUntil(caches.open(CACHE).then(async c=>{
   await c.addAll(SHELL);

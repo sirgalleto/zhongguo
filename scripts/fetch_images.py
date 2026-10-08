@@ -1,18 +1,18 @@
-"""Download one freely licensed Wikimedia Commons photo per query into src/img/.
+"""Download one freely licensed Wikimedia Commons photo per query into img/.
 
 Runs in GitHub Actions (see .github/workflows/images.yml), so the photos are
 self-hosted on the site and keep working offline and inside mainland China.
 
 - Queries live in scripts/image_queries.json, grouped by city key.
 - Only CC0, public domain, CC BY and CC BY-SA files are used.
-- Writes src/img/credits.json with author, license and source page per photo.
+- Writes img/credits.json with author, license and source page per photo.
 - Existing photos are kept; delete a file (or its credits entry) to refetch it.
 """
 import io, json, pathlib, re, sys, time, urllib.parse, urllib.request
 from PIL import Image
 
 ROOT = pathlib.Path(__file__).resolve().parent.parent
-OUT = ROOT / "src" / "img"
+OUT = ROOT / "img"
 API = "https://commons.wikimedia.org/w/api.php"
 UA = "zhongguo-trip-pwa/1.0 (https://github.com/sirgalleto/zhongguo)"
 OK_LICENSE = re.compile(r"^(cc0|public domain|pd|cc by(-sa)?( \d\.\d)?)", re.I)
