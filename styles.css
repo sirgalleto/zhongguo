@@ -71,6 +71,18 @@ nav.tabs{position:fixed;left:0;right:0;bottom:0;z-index:6;background:color-mix(i
 .flapch{font-family:var(--f-display);font-weight:300;font-size:clamp(54px,17vw,80px);line-height:1;width:1.12em;height:1.3em;display:grid;place-items:center;border:1px solid var(--line);border-radius:4px;color:var(--accent);text-shadow:var(--glow);position:relative;overflow:hidden;background:var(--faint)}
 .flapch::after{content:"";position:absolute;left:0;right:0;top:50%;height:1px;background:var(--line)}
 .flapch.spin{color:var(--muted)}
+/* Split-flap on touch devices: two halves, flaps fold over the midline */
+.flapch.sf{display:block}
+.flapch.sf .h{position:absolute;left:0;right:0;height:50%;overflow:hidden;background:var(--faint)}
+.flapch.sf .h.t{top:0}
+.flapch.sf .h.b{bottom:0}
+.flapch.sf .h > span{position:absolute;left:0;right:0;height:calc(1.3em - 2px);line-height:calc(1.3em - 2px);text-align:center}
+.flapch.sf .h.t > span{top:0}
+.flapch.sf .h.b > span{top:calc(1px - .65em)}
+.flapch.sf .h.flap{z-index:2}
+.flapch.sf .h.t.flap{transform-origin:50% 100%}
+.flapch.sf .h.b.flap{transform-origin:50% 0}
+.flapch.sf::after{z-index:3}
 #flap,.stamp{cursor:pointer;-webkit-tap-highlight-color:transparent}
 .big-py{font-family:var(--f-mono);font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin-top:12px}
 .stamp{border:1.5px solid var(--accent);border-radius:3px;color:var(--accent);padding:6px 5px;display:flex;align-items:center;justify-content:center;transform:rotate(-4deg);line-height:1}
@@ -211,11 +223,27 @@ nav.tabs{position:fixed;left:0;right:0;bottom:0;z-index:6;background:color-mix(i
 .board .big-zh{margin-top:0}
 .board .big-py{margin-top:10px}
 .board .route{margin-top:16px;padding:0}
+/* Rail: dots placed by rail hours, labels alternate rows so close cities don't collide */
+.route.rail ol{display:block;height:64px}
+.route.rail ol::before{left:var(--r0);right:calc(100% - var(--r6));top:14px}
+.route.rail .fill{left:var(--r0);top:14px;height:1px;opacity:.45;box-shadow:none;transition:width .12s linear}
+.route.rail li{position:absolute;top:8px;transform:translateX(-50%);width:auto}
+.route.rail li.low .railbtn{padding-top:18px}
+.route.rail li.low .dot{margin-top:-18px}
+.route.rail .railbtn{gap:5px}
+.route.rail .hrs{position:absolute;top:0;transform:translate(-50%,-4px);font-size:9px;color:var(--muted);opacity:.6;letter-spacing:.04em;white-space:nowrap}
+.train{position:absolute;top:14px;left:var(--r0);width:30px;height:11px;transform:translate(-50%,-50%);color:var(--accent);filter:drop-shadow(var(--glow));transition:left .12s linear;pointer-events:none;z-index:2}
+.train svg{display:block;width:100%;height:100%;fill:currentColor}
+.train .win{fill:var(--paper);opacity:.85}
+.train .nose{fill:var(--paper);opacity:.35}
+.train.back svg{transform:scaleX(-1)}
+.train.docked{transform:translate(-50%,-50%) scale(.9)}
+.route.rail li.view .dot{transform:scale(1.35)}
 .railbtn{background:none;border:0;padding:0;display:flex;flex-direction:column;align-items:center;gap:6px;color:inherit;width:100%}
 .route li.view .dot{border-color:var(--accent);border-width:2px;transform:scale(1.2)}
 .route li.view .zh{color:var(--accent)}
 .stops{display:flex;flex-direction:column;padding-bottom:30vh}
-.stop{min-height:62vh;padding:32px 0 8px;display:flex;flex-direction:column;gap:12px}
+.stop{min-height:calc(24vh + var(--n,3) * 15vh);padding:32px 0 8px;display:flex;flex-direction:column;gap:12px}
 .stop-head{display:flex;align-items:baseline;gap:12px}
 .stop-head .n{font-size:11px;color:var(--muted);letter-spacing:.08em}
 .stop-head .zh{font-size:32px;font-weight:300;color:var(--cc);letter-spacing:.08em;line-height:1}
