@@ -401,6 +401,7 @@ function setStatus(){
 /* ---------- Motion ---------- */
 const REDUCED=(()=>{try{return matchMedia('(prefers-reduced-motion: reduce)').matches}catch(e){return false}})();
 const FLAP_GLYPHS='上海北京西安成都重庆深圳广州东南中华城站';
+const FLIP_TICKS=4, FLIP_STAGGER=2; // flips per tile; second tile settles a bit later
 function flip(delay){
   const tiles=[...document.querySelectorAll('#flap .flapch')];
   tiles.forEach((el,k)=>{
@@ -409,7 +410,7 @@ function flip(delay){
     setTimeout(()=>{
       el.classList.add('spin');
       el._flip=setInterval(()=>{
-        const done=++n>10+k*6;
+        const done=++n>FLIP_TICKS+k*FLIP_STAGGER;
         el.textContent=done?target:FLAP_GLYPHS[Math.floor(Math.random()*FLAP_GLYPHS.length)];
         try{el.animate([{transform:'scaleY(.1)'},{transform:'scaleY(1)'}],{duration:70,easing:'ease-out'})}catch(e){}
         if(done){clearInterval(el._flip);el._flip=null;el.classList.remove('spin')}
