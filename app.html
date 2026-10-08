@@ -656,7 +656,7 @@ const DICT=[
  {cat:'Help',zh:'求助',p:[
   ['Help!','救命！','jiùmìng!'],['I\'m lost','我迷路了','wǒ mílù le'],['I lost my phone','我的手机丢了','wǒ de shǒujī diū le'],
   ['Please call an ambulance','请叫救护车','qǐng jiào jiùhùchē'],['Hospital','医院','yīyuàn'],['Pharmacy','药店','yàodiàn'],
-  ['Police 110 · Ambulance 120 · Fire 119','报警110 · 急救120 · 火警119','bàojǐng yāo yāo líng · jíjiù yāo èr líng']]},
+  ['Police 110 · Ambulance 120 · Fire 119','报警110 · 急救120 · 火警119','bàojǐng yāo yāo líng · jíjiù yāo èr líng · huǒjǐng yāo yāo jiǔ','报警，幺幺零。急救，幺二零。火警，幺幺九。']]},
  {cat:'Numbers',zh:'数字',p:[
   ['1 2 3 4 5','一 二 三 四 五','yī èr sān sì wǔ'],['6 7 8 9 10','六 七 八 九 十','liù qī bā jiǔ shí'],
   ['100 / 1,000','一百 / 一千','yì bǎi / yì qiān'],['Yuan (spoken)','块','kuài']]}
@@ -669,19 +669,47 @@ function renderDict(){
   const strip=s=>s.normalize('NFD').replace(/[̀-ͯ]/g,'').toLowerCase();
   const html=DICT.map(c=>{
     const rows=c.p.filter(([en,hz,py])=>!q||en.toLowerCase().includes(q)||hz.includes(dq.trim())||strip(py).includes(strip(q)))
-      .map(([en,hz,py])=>`<div class="ph"><div class="en">${esc(en)}</div><div class="hz">${hz}</div><div class="py">${py}</div>
-        <div class="acts"><button class="ico" data-say="${hz}" aria-label="Play ${esc(en)}">${ICON_SAY}</button><button class="ico" data-show="${encodeURIComponent(JSON.stringify([en,hz,py]))}" aria-label="Show ${esc(en)} full screen">${ICON_SHOW}</button></div></div>`).join('');
+      .map(([en,hz,py,sp])=>`<div class="ph"><div class="en">${esc(en)}</div><div class="hz">${hz}</div><div class="py">${py}</div>
+        <div class="acts"><button class="ico" data-say="${esc(sp||hz)}" aria-label="Play ${esc(en)}">${ICON_SAY}</button><button class="ico" data-show="${encodeURIComponent(JSON.stringify([en,hz,py,sp||hz]))}" aria-label="Show ${esc(en)} full screen">${ICON_SHOW}</button></div></div>`).join('');
     return rows?`<div class="cat"><h3>${c.cat}<span class="zh">${c.zh}</span></h3>${rows}</div>`:'';
   }).join('');
   $('#dict-list').innerHTML=html||'<div class="empty">No phrase matches. Try English or pinyin without tones.</div>';
 }
 function initDict(){
   $('#p-dictionary').innerHTML=`<input class="search" id="dsearch" type="search" placeholder="Search English, pinyin or 汉字" aria-label="Search phrases"><div id="dict-list" style="display:flex;flex-direction:column;gap:16px"></div>
-  <div class="note">Tap the speaker to hear it. Tap the arrows to show the phrase full screen to a driver or waiter.</div>`;
+  <div class="note">Tap the speaker to hear it. Tap the arrows to show the phrase full screen to a driver or waiter.<div class="mono" id="voice-name" style="margin-top:6px;font-size:11px"></div></div>`;
+  pickVoice();
   $('#dsearch').oninput=e=>{dq=e.target.value;renderDict()};
   renderDict();
 }
-function say(t){try{const u=new SpeechSynthesisUtterance(t);u.lang='zh-CN';u.rate=.85;speechSynthesis.cancel();speechSynthesis.speak(u)}catch(e){toast('Audio is not available here')}}
+/* Mandarin voice: pick a real mainland zh-CN voice instead of the browser default.
+   Cantonese (zh-HK) and Taiwanese Mandarin (zh-TW) voices are skipped on purpose. */
+let ZH_VOICE=null;
+const VOICE_PREF=[/xiaoxiao/i,/yunxi/i,/tingting|ting-ting/i,/普通话|mandarin.*(china|mainland)/i,/google.*(普通话|chinese)/i,/yaoyao|huihui|kangkang/i,/lili|meijia|sinji/i];
+function pickVoice(){
+  let vs=[];try{vs=speechSynthesis.getVoices()}catch(e){return null}
+  const norm=v=>(v.lang||'').replace('_','-').toLowerCase();
+  const cn=vs.filter(v=>norm(v)==='zh-cn'||norm(v)==='cmn-cn'||norm(v)==='cmn-hans-cn');
+  const pool=cn.length?cn:vs.filter(v=>/^zh(-hans)?$/.test(norm(v)));
+  const score=v=>{let s=0;VOICE_PREF.forEach((re,i)=>{if(re.test(v.name))s=Math.max(s,100-i*10)});if(/enhanced|premium|neural|natural|online/i.test(v.name))s+=15;if(v.localService)s+=3;return s};
+  ZH_VOICE=pool.sort((a,b)=>score(b)-score(a))[0]||null;
+  const lbl=document.getElementById('voice-name');
+  if(lbl)lbl.textContent=ZH_VOICE?`Voice: ${ZH_VOICE.name} (${ZH_VOICE.lang})`:'No Mandarin voice found on this device';
+  return ZH_VOICE;
+}
+try{pickVoice();speechSynthesis.addEventListener('voiceschanged',pickVoice)}catch(e){}
+/* Make the text read naturally: separators become pauses, Latin bits are dropped */
+const speakable=t=>t.replace(/\s*[\/·]\s*/g,'，').replace(/WiFi/gi,'无线网').trim().replace(/\s+/g,'，');
+function say(t){
+  try{
+    const v=ZH_VOICE||pickVoice();
+    if(!v){toast('Add a Chinese (China mainland) voice in your device settings');return}
+    speechSynthesis.cancel();
+    const u=new SpeechSynthesisUtterance(speakable(t));
+    u.voice=v;u.lang=v.lang;u.rate=.82;u.pitch=1;
+    setTimeout(()=>speechSynthesis.speak(u),60); // iOS drops a speak() called right after cancel()
+  }catch(e){toast('Audio is not available here')}
+}
 let showing=null;
 document.addEventListener('click',e=>{
   const s=e.target.closest('[data-say]');if(s){say(s.dataset.say);return}
@@ -692,7 +720,7 @@ document.addEventListener('click',e=>{
 });
 function selectText(el){try{const r=document.createRange();r.selectNodeContents(el);const s=getSelection();s.removeAllRanges();s.addRange(r);toast('Selected, copy it from the menu')}catch(e){}}
 $('#show-close').onclick=()=>{$('#show').hidden=true};
-$('#show-say').onclick=()=>showing&&say(showing[1]);
+$('#show-say').onclick=()=>showing&&say(showing[3]||showing[1]);
 document.addEventListener('keydown',e=>{if(e.key==='Escape')$('#show').hidden=true});
 function toast(m){const t=document.createElement('div');t.className='toast';t.textContent=m;document.body.appendChild(t);setTimeout(()=>t.remove(),1800)}
 
