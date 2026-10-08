@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="theme-color" content="#0C0E1C">
+<meta name="theme-color" content="#15233A">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="China Trip">
@@ -16,29 +16,31 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Noto+Serif+SC:wght@600;900&display=swap">
 <style>
 /* Layout: phone app shell. Compact sticky top bar, one scrolling panel per tab, fixed bottom tab bar.
-   Look: neon megacity, dark-first. Each city owns a neon accent; the whole app takes on
-   today's city color through --accent (set from JS). Status colors (ok / warn) never change per city. */
+   Look: palette C, "one color per city". Neutral rail-ticket base; each city owns a color drawn from
+   its own world, and the app takes today's city color through --accent (set from JS).
+   Status colors (ok / warn) never change per city. */
 :root{
-  --paper:#0C0E1C; --card:#151933; --ink:#EEF0FF; --muted:#9DA2C9; --line:#272C52; --ticket:#1A1F40; --tile:#080A16;
-  --ok:#4BE3A0; --ok-soft:#10352A; --warn:#FFB547; --warn-soft:#3A2A10;
-  --c-sh:#4FA8FF; --c-bj:#FF4D6A; --c-xa:#FFB547; --c-cd:#B6F24A; --c-cq:#FF4D8D; --c-sz:#3BD6F5; --c-gz:#B583FF;
-  --accent:var(--c-sh); --glow:0 0 22px color-mix(in srgb,var(--accent) 60%,transparent);
-  --stamp:var(--accent); --stamp-soft:color-mix(in srgb,var(--accent) 16%,var(--card));
+  --paper:#EEF2F5; --card:#FFFFFF; --ink:#15233A; --muted:#59697E; --line:#D3DDE6; --ticket:#DFE8EF;
+  --ok:#2C7656; --ok-soft:#DCEFE5; --warn:#9A5A08; --warn-soft:#F8EAD2;
+  --c-sh:#2E6E8E; --c-bj:#B4271E; --c-xa:#B8682F; --c-cd:#3D8B4F; --c-cq:#D2402B; --c-sz:#1597A6; --c-gz:#A87C12;
+  --accent:var(--c-sh); --glow:none;
+  --tile:color-mix(in srgb,var(--accent) 12%,var(--card));
+  --stamp:var(--accent); --stamp-soft:color-mix(in srgb,var(--accent) 14%,var(--card));
   --f-display:"Noto Serif SC","Songti SC","STSong","SimSun",serif;
   --f-body:"Instrument Sans",-apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
   --f-mono:"JetBrains Mono",ui-monospace,Menlo,Consolas,monospace;
-  --r:12px; color-scheme:dark;
+  --r:12px;
 }
-@media (prefers-color-scheme: light){:root:not([data-theme="dark"]){
-  --paper:#F4F3FA; --card:#FFFFFF; --ink:#191A33; --muted:#5D5F80; --line:#DEDCEC; --ticket:#ECEBF7; --tile:#191A33;
-  --ok:#0E8A57; --ok-soft:#DDF5E9; --warn:#A3620A; --warn-soft:#FBEBD0;
-  --c-sh:#1F6FD1; --c-bj:#D11E3E; --c-xa:#B87300; --c-cd:#4E8A0A; --c-cq:#D11E64; --c-sz:#0A8FAD; --c-gz:#7A4BD6;
-  --glow:none; color-scheme:light }}
-:root[data-theme="light"]{
-  --paper:#F4F3FA; --card:#FFFFFF; --ink:#191A33; --muted:#5D5F80; --line:#DEDCEC; --ticket:#ECEBF7; --tile:#191A33;
-  --ok:#0E8A57; --ok-soft:#DDF5E9; --warn:#A3620A; --warn-soft:#FBEBD0;
-  --c-sh:#1F6FD1; --c-bj:#D11E3E; --c-xa:#B87300; --c-cd:#4E8A0A; --c-cq:#D11E64; --c-sz:#0A8FAD; --c-gz:#7A4BD6;
-  --glow:none; color-scheme:light }
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --paper:#0E1621; --card:#162131; --ink:#E5ECF4; --muted:#93A2B6; --line:#28374B; --ticket:#1B2A3C;
+  --ok:#62C49A; --ok-soft:#173327; --warn:#EAB463; --warn-soft:#3A2B14;
+  --c-sh:#6FA9C9; --c-bj:#E8695C; --c-xa:#E09A62; --c-cd:#77C08A; --c-cq:#F07763; --c-sz:#5CC6D2; --c-gz:#E0BC5A;
+  color-scheme:dark }}
+:root[data-theme="dark"]{
+  --paper:#0E1621; --card:#162131; --ink:#E5ECF4; --muted:#93A2B6; --line:#28374B; --ticket:#1B2A3C;
+  --ok:#62C49A; --ok-soft:#173327; --warn:#EAB463; --warn-soft:#3A2B14;
+  --c-sh:#6FA9C9; --c-bj:#E8695C; --c-xa:#E09A62; --c-cd:#77C08A; --c-cq:#F07763; --c-sz:#5CC6D2; --c-gz:#E0BC5A;
+  color-scheme:dark }
 
 *{box-sizing:border-box}
 html,body{background:var(--paper)}
