@@ -234,7 +234,7 @@ function stopUnderBoard(){
    a city's section moves the train along the line toward the next city. */
 const RAIL_POS=(()=>{
   const hrs=STAYS.slice(1).map(s=>s.rail||1), total=hrs.reduce((a,b)=>a+b,0);
-  const start=5, span=90, minGap=6, free=span-minGap*hrs.length;
+  const start=5, span=90, minGap=11, free=span-minGap*hrs.length; // minGap keeps close cities (Shenzhen, Guangzhou) readable
   const pos=[start]; hrs.forEach(h=>pos.push(pos[pos.length-1]+minGap+free*h/total));
   return pos.map(x=>+x.toFixed(2));
 })();
@@ -259,7 +259,20 @@ function moveTrain(){
   tr.classList.toggle('docked',f<0.04||i>=STAYS.length-1);
   tr.style.left=x+'%';
   fill.style.width=(x-RAIL_POS[0])+'%';
+  const last=STAYS.length-1;
+  if(lastP>=0&&lastP<last-0.001&&p>=last-0.001)lightsHome();
   lastP=p;
+}
+/* Arrival at the last stop: a light runs back along the rail and each stop pings, Guangzhou to Shanghai */
+function lightsHome(){
+  if(REDUCED)return;
+  const ol=$('.route.rail ol'); if(!ol||!ol.animate)return;
+  const sw=document.createElement('span'); sw.className='sweep'; ol.appendChild(sw);
+  const r0=RAIL_POS[0]+'%', r6=RAIL_POS[RAIL_POS.length-1]+'%';
+  const a=sw.animate([{left:r6,opacity:0},{opacity:.8,offset:.1},{opacity:.8,offset:.9},{left:r0,opacity:0}],{duration:1400,easing:'ease-in-out'});
+  a.finished.then(()=>sw.remove(),()=>sw.remove());
+  const dots=[...document.querySelectorAll('.route.rail li .dot')].reverse();
+  dots.forEach((d,i)=>setTimeout(()=>{try{d.animate([{boxShadow:'0 0 0 0 color-mix(in srgb, var(--accent) 70%, transparent)'},{boxShadow:'0 0 0 8px color-mix(in srgb, var(--accent) 0%, transparent)'}],{duration:500,easing:'ease-out'})}catch(e){}},i*200));
 }
 let ticking=false;
 window.addEventListener('scroll',()=>{
