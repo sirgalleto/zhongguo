@@ -304,7 +304,6 @@ function renderStays(){
       <div class="perf"></div>
       <div class="ticket-foot">
         <div class="kv"><div class="k">Room</div><div class="v">${esc(s.room)}</div></div>
-        <div class="kv"><div class="k">Paid</div><div class="v mono">${s.price}</div></div>
         <div class="kv"><div class="k">Area</div><div class="v">${esc(s.area)}</div></div>
         <div class="kv"><div class="k">Status</div><div class="v">${badge('confirmed')}</div></div>
         <div class="kv"><div class="k">Booking no.</div><div class="v"><button class="copy" data-copy="${s.no}" aria-label="Copy booking number">${s.no}</button></div></div>
@@ -319,7 +318,7 @@ function renderStays(){
     <div class="summary">
       <div><b>7</b><span>hotels</span></div>
       <div><b>24</b><span>nights</span></div>
-      <div><b class="mono" style="font-size:15px;line-height:1.35">REMOVED<br>REMOVED</b><span>total paid</span></div>
+      <div><b>${DAYS.length}</b><span>days</span></div>
     </div>
     <div class="note">Check-in at every hotel needs your passport. For taxis, open the booking in the Trip.com app and use the Chinese address card, drivers read that faster than any map pin.</div>
     ${cards}`;
