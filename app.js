@@ -306,7 +306,6 @@ function renderStays(){
         <div class="kv"><div class="k">Room</div><div class="v">${esc(s.room)}</div></div>
         <div class="kv"><div class="k">Area</div><div class="v">${esc(s.area)}</div></div>
         <div class="kv"><div class="k">Status</div><div class="v">${badge('confirmed')}</div></div>
-        <div class="kv"><div class="k">Booking no.</div><div class="v"><button class="copy" data-copy="${s.no}" aria-label="Copy booking number">${s.no}</button></div></div>
       </div>
       <div class="links">
         <a href="https://uri.amap.com/search?keyword=${q}&city=${encodeURIComponent(c.zh)}" target="_blank" rel="noopener">Amap</a>
@@ -420,7 +419,7 @@ document.addEventListener('click',e=>{
   const sh=e.target.closest('[data-show]');
   if(sh){showing=JSON.parse(decodeURIComponent(sh.dataset.show));$('#show-en').textContent=showing[0];$('#show-hz').textContent=showing[1];$('#show-py').textContent=showing[2];$('#show').hidden=false;return}
   const cp=e.target.closest('[data-copy]');
-  if(cp){e.preventDefault();const v=cp.dataset.copy;try{navigator.clipboard.writeText(v).then(()=>toast('Booking number copied'),()=>selectText(cp))}catch(err){selectText(cp)}}
+  if(cp){e.preventDefault();const v=cp.dataset.copy;try{navigator.clipboard.writeText(v).then(()=>toast('Copied'),()=>selectText(cp))}catch(err){selectText(cp)}}
 });
 function selectText(el){try{const r=document.createRange();r.selectNodeContents(el);const s=getSelection();s.removeAllRanges();s.addRange(r);toast('Selected, copy it from the menu')}catch(e){}}
 $('#show-close').onclick=()=>{$('#show').hidden=true};

@@ -41,7 +41,7 @@ Scripts load in order `trip-data.js` → `phrases.js` → `app.js`. Data files o
 - Checkbox state is keyed by the item's text. Rewording an item resets its tick, which is fine.
 - City keys: `sh bj xa cd cq sz gz`. Each has a color token `--c-<key>` in `styles.css`.
 - Only add what the owner actually confirmed or asked for. Never invent bookings, refs or prices.
-- **No money in the app or the repo**: no prices, totals or payment details. The repo is public.
+- **No money or booking numbers in the app or the repo**: no prices, totals, payment details or hotel booking numbers. The repo is public.
 
 ## Phrases (`phrases.js`)
 
