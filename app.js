@@ -8,7 +8,7 @@ const badge=st=>STATUS[st]?`<span class="badge ${st}">${STATUS[st]}</span>`:'';
 const amapCity={sh:'310000',bj:'110000',xa:'610100',cd:'510100',cq:'500000',sz:'440300',gz:'440100'};
 const mapLink=(q,c)=>`<a class="maplink" href="https://uri.amap.com/search?keyword=${encodeURIComponent(q)}&city=${amapCity[c]||''}&src=zhongguo" target="_blank" rel="noopener">Amap ↗</a>`;
 const copyChip=(v,label)=>`<button class="copy" data-copy="${esc(v)}" aria-label="Copy ${esc(label||v)}">${esc(v)}</button>`;
-const meta=(it,c)=>(it.status||it.ref||it.name||it.time||it.map)?`<span class="meta">${badge(it.status)}${it.time?`<span class="mono">${esc(it.time)}</span>`:''}${it.name?copyChip(it.name,'name'):''}${it.ref?copyChip(it.ref,'address'):''}${it.map?mapLink(it.map,c):''}</span>`:'';
+const meta=(it,c)=>(it.status||it.tag||it.ref||it.name||it.time||it.map)?`<span class="meta">${badge(it.status)}${it.tag?`<span class="badge soft">${esc(it.tag)}</span>`:''}${it.time?`<span class="mono">${esc(it.time)}</span>`:''}${it.name?copyChip(it.name,'name'):''}${it.ref?copyChip(it.ref,'address'):''}${it.map?mapLink(it.map,c):''}</span>`:'';
 const hash=s=>{let h=0;for(const ch of s)h=(h*31+ch.charCodeAt(0))|0;return (h>>>0).toString(36)};
 const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 

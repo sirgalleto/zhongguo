@@ -45,6 +45,8 @@ Scripts load in order `trip-data.js` → `phrases.js` → `app.js`. Data files o
   {text:'Forbidden City', status:'confirmed', ref:'2026…', time:'09:00', map:'故宫博物院'}
   ```
   `status` is `'confirmed'` (green "Confirmed") or `'tobook'` (amber "To book"). `ref` renders as a tap-to-copy reference.
+  `name` and `ref` (place name, Chinese address) render as tap-to-copy chips. `tag` adds a neutral label such as `'If time'`.
+  Never drop a stop the owner asked for to make a day fit; tag it `'If time'` instead.
   `map` is an Amap search keyword (Chinese works best, e.g. `'武康大楼'`) and renders an "Amap ↗" link scoped to that day's city.
 - `TRANSIT[date]` uses the same `{text, status, ref}` shape for travel days.
 - Checkbox state is keyed by the item's text. Rewording an item resets its tick, which is fine.
