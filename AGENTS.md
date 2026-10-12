@@ -34,9 +34,10 @@ Scripts load in order `trip-data.js` → `phrases.js` → `app.js`. Data files o
 - Dates are `YYYY-MM-DD` strings. The trip runs `2026-10-11` to `2026-11-04`.
 - A `PLAN` item is either a string (an idea, no label) or an object:
   ```js
-  {text:'Forbidden City', status:'confirmed', ref:'2026…', time:'09:00'}
+  {text:'Forbidden City', status:'confirmed', ref:'2026…', time:'09:00', map:'故宫博物院'}
   ```
   `status` is `'confirmed'` (green "Confirmed") or `'tobook'` (amber "To book"). `ref` renders as a tap-to-copy reference.
+  `map` is an Amap search keyword (Chinese works best, e.g. `'武康大楼'`) and renders an "Amap ↗" link scoped to that day's city.
 - `TRANSIT[date]` uses the same `{text, status, ref}` shape for travel days.
 - Checkbox state is keyed by the item's text. Rewording an item resets its tick, which is fine.
 - City keys: `sh bj xa cd cq sz gz`. Each has a color token `--c-<key>` in `styles.css`.

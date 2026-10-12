@@ -46,7 +46,16 @@ const PLAN={
     'Taxi or DiDi to the hotel, about 1 h. Metro and Maglev are usually done by the time you clear immigration',
     'Late check-in, sleep'],
     tip:'Economy Light: 1 checked piece. Ask at Taoyuan to tag the bag through to Shanghai, and message the hotel on Trip.com that you arrive after midnight.'},
-  '2026-10-12':{t:'Bund and French Concession',i:['Morning walk down Nanjing East Road to the Bund, Lujiazui skyline across the river','Wukang Road and Anfu Road: plane trees, cafes, local designer shops','Columbia Circle for architecture and a coffee','Tianzifang lanes in the late afternoon','Yuyuan Garden area lit up at night'],tip:'Monday: most Shanghai museums are closed. Keep art for Tuesday.'},
+  '2026-10-12':{t:'French Concession walk',i:[
+    {text:'Yongyuan Rd (Jing\'an): "non-standard" street, local brands and reverse shoppers',map:'永源路'},
+    {text:'Wukang Rd to Anfu Rd: plane trees, cafes, designer boutiques',map:'武康大楼'},
+    {text:'Donghu Rd to Yanqing Rd "Chill & Play" block: FUFU Shanghai, Yerenren flagship (limited ice cream), GOODBAI',map:'东湖路 延庆路'},
+    {text:'Yesha Yueying coconut ice cream, 87 Nanchang Rd',map:'上海 南昌路87号'},
+    {text:'Classic Shanghai sweets on the way: Ruby cream cake (红宝石) and Kaisiling butter roll (凯司令)',map:'红宝石 淮海中路'},
+    {text:'Huaihai Rd at night: flagships and concept stores, open late',map:'淮海中路'},
+    {text:'Backstreets: Yandang Rd, Sinan Rd and Nanchang Rd for night markets, live music, food stalls',map:'雁荡路'},
+    {text:'Sinan Mansions: "Sinan Night Party" with craft beer, markets, live music',map:'思南公馆'}],
+    tip:'Monday: most Shanghai museums are closed, so this is a walking day. Kaisiling\'s classic shop is on Nanjing West Rd if you pass by.'},
   '2026-10-13':{t:'Art and towers',i:['West Bund: Long Museum and West Bund Museum, then a riverside walk','Power Station of Art','Shanghai Tower observation deck at sunset','Dinner on Huanghe Road for shengjian bao']},
   '2026-10-14':{t:'Train to Beijing',i:['Morning coffee, pack, check out','Evening walk around Qianmen and Dashilar, close to the hotel','Peking duck dinner']},
   '2026-10-15':{t:'Imperial core',i:[

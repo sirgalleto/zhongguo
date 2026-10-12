@@ -5,7 +5,9 @@ const $=s=>document.querySelector(s);
 const norm=it=>typeof it==='string'?{text:it}:it;
 const STATUS={confirmed:'Confirmed',tobook:'To book'};
 const badge=st=>STATUS[st]?`<span class="badge ${st}">${STATUS[st]}</span>`:'';
-const meta=it=>(it.status||it.ref||it.time)?`<span class="meta">${badge(it.status)}${it.time?`<span class="mono">${esc(it.time)}</span>`:''}${it.ref?`<button class="copy" data-copy="${esc(it.ref)}" aria-label="Copy reference">${esc(it.ref)}</button>`:''}</span>`:'';
+const amapCity={sh:'310000',bj:'110000',xa:'610100',cd:'510100',cq:'500000',sz:'440300',gz:'440100'};
+const mapLink=(q,c)=>`<a class="maplink" href="https://uri.amap.com/search?keyword=${encodeURIComponent(q)}&city=${amapCity[c]||''}&src=zhongguo" target="_blank" rel="noopener">Amap ↗</a>`;
+const meta=(it,c)=>(it.status||it.ref||it.time||it.map)?`<span class="meta">${badge(it.status)}${it.time?`<span class="mono">${esc(it.time)}</span>`:''}${it.ref?`<button class="copy" data-copy="${esc(it.ref)}" aria-label="Copy reference">${esc(it.ref)}</button>`:''}${it.map?mapLink(it.map,c):''}</span>`:'';
 const hash=s=>{let h=0;for(const ch of s)h=(h*31+ch.charCodeAt(0))|0;return (h>>>0).toString(36)};
 const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 
@@ -162,7 +164,7 @@ function renderItinerary(){
       <div class="stop-head"><span class="n mono">${String(i+1).padStart(2,'0')}</span><span class="zh">${c.zh}</span><b>${c.en}</b></div>
       <div class="stop-meta mono">${range(s)} · ${n} night${n>1?'s':''}</div>
       <div class="stop-hotel">${esc(s.name.split(' (')[0])}<span class="mono">${esc(s.room)}</span></div>
-      ${bookedToday.length?`<div class="note"><b>Bookings today</b>${bookedToday.map(x=>`<div style="margin-top:6px">${esc(x.text)}${meta(x)}</div>`).join('')}</div>`:''}
+      ${bookedToday.length?`<div class="note"><b>Bookings today</b>${bookedToday.map(x=>`<div style="margin-top:6px">${esc(x.text)}${meta(x,s.c)}</div>`).join('')}</div>`:''}
       <div class="days">${days}</div>
       ${leg?`<div class="leg"><span class="arrow" aria-hidden="true">↓</span><span>${esc(leg.text)}</span>${badge(leg.status)}</div>`:''}
     </section>`;
@@ -335,7 +337,7 @@ function renderPlan(){
     lastCity=d.c;
     const p=PLAN[d.k]||{t:'',i:[]};const c=CITIES[d.c];
     const n=DAYS.indexOf(d)+1;
-    const items=p.i.map(norm).map(it=>{const id=`${d.k}-${hash(it.text)}`;return `<li><label><input type="checkbox" id="pc-${id}" data-id="${id}" ${done[id]?'checked':''}><span><span class="txt">${esc(it.text)}</span>${meta(it)}</span></label></li>`}).join('');
+    const items=p.i.map(norm).map(it=>{const id=`${d.k}-${hash(it.text)}`;return `<li><label><input type="checkbox" id="pc-${id}" data-id="${id}" ${done[id]?'checked':''}><span><span class="txt">${esc(it.text)}</span>${meta(it,d.c)}</span></label></li>`}).join('');
     return gal+`<article class="pday${d.k===t?' today':''}${d.k<t?' past':''}" style="--cc:var(--c-${d.c})" id="day-${d.k}">
       <header><span class="zh">${c.zh}</span><div><b>${esc(p.t)}</b><span>Day ${n} · ${fmt(d.k,{weekday:'long',month:'short',day:'numeric'})}</span></div>${d.k===t?'<span class="tag" style="background:var(--stamp);border-color:var(--stamp);color:var(--card)">Today</span>':''}</header>
       <ul>${items}</ul>
