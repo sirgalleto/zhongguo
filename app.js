@@ -7,7 +7,8 @@ const STATUS={confirmed:'Confirmed',tobook:'To book'};
 const badge=st=>STATUS[st]?`<span class="badge ${st}">${STATUS[st]}</span>`:'';
 const amapCity={sh:'310000',bj:'110000',xa:'610100',cd:'510100',cq:'500000',sz:'440300',gz:'440100'};
 const mapLink=(q,c)=>`<a class="maplink" href="https://uri.amap.com/search?keyword=${encodeURIComponent(q)}&city=${amapCity[c]||''}&src=zhongguo" target="_blank" rel="noopener">Amap ↗</a>`;
-const meta=(it,c)=>(it.status||it.ref||it.time||it.map)?`<span class="meta">${badge(it.status)}${it.time?`<span class="mono">${esc(it.time)}</span>`:''}${it.ref?`<button class="copy" data-copy="${esc(it.ref)}" aria-label="Copy reference">${esc(it.ref)}</button>`:''}${it.map?mapLink(it.map,c):''}</span>`:'';
+const copyChip=(v,label)=>`<button class="copy" data-copy="${esc(v)}" aria-label="Copy ${esc(label||v)}">${esc(v)}</button>`;
+const meta=(it,c)=>(it.status||it.ref||it.name||it.time||it.map)?`<span class="meta">${badge(it.status)}${it.time?`<span class="mono">${esc(it.time)}</span>`:''}${it.name?copyChip(it.name,'name'):''}${it.ref?copyChip(it.ref,'address'):''}${it.map?mapLink(it.map,c):''}</span>`:'';
 const hash=s=>{let h=0;for(const ch of s)h=(h*31+ch.charCodeAt(0))|0;return (h>>>0).toString(36)};
 const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 
@@ -301,12 +302,12 @@ function renderStays(){
       <div class="ticket-main">
         <div class="city-zh">${c.zh}</div>
         <div style="min-width:0"><div class="when">${fmt(s.in,{weekday:'short',month:'short',day:'numeric'})} → ${fmt(s.out,{weekday:'short',month:'short',day:'numeric'})} · ${n} night${n>1?'s':''}${cur?' · <b style="color:var(--stamp)">Now</b>':''}</div>
-        <h3>${esc(s.name)}</h3></div>
+        <h3><button class="copy copy-name" data-copy="${esc(s.name)}" aria-label="Copy hotel name">${esc(s.name)}</button></h3></div>
       </div>
       <div class="perf"></div>
       <div class="ticket-foot">
         <div class="kv"><div class="k">Room</div><div class="v">${esc(s.room)}</div></div>
-        <div class="kv"><div class="k">Area</div><div class="v">${esc(s.area)}</div></div>
+        <div class="kv"><div class="k">Area</div><div class="v">${copyChip(s.area.split(' · ')[0],'area')}${s.area.includes(' · ')?` <span class="mono" style="color:var(--muted);font-size:11px">${esc(s.area.split(' · ')[1])}</span>`:''}</div></div>
         <div class="kv"><div class="k">Status</div><div class="v">${badge('confirmed')}</div></div>
       </div>
       <div class="links">
@@ -421,7 +422,7 @@ document.addEventListener('click',e=>{
   const sh=e.target.closest('[data-show]');
   if(sh){showing=JSON.parse(decodeURIComponent(sh.dataset.show));$('#show-en').textContent=showing[0];$('#show-hz').textContent=showing[1];$('#show-py').textContent=showing[2];$('#show').hidden=false;return}
   const cp=e.target.closest('[data-copy]');
-  if(cp){e.preventDefault();const v=cp.dataset.copy;try{navigator.clipboard.writeText(v).then(()=>toast('Copied'),()=>selectText(cp))}catch(err){selectText(cp)}}
+  if(cp){e.preventDefault();const v=cp.dataset.copy;try{navigator.clipboard.writeText(v).then(()=>toast('Copied · '+v),()=>selectText(cp))}catch(err){selectText(cp)}}
 });
 function selectText(el){try{const r=document.createRange();r.selectNodeContents(el);const s=getSelection();s.removeAllRanges();s.addRange(r);toast('Selected, copy it from the menu')}catch(e){}}
 $('#show-close').onclick=()=>{$('#show').hidden=true};

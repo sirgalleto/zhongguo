@@ -142,6 +142,11 @@ nav.tabs{position:fixed;left:0;right:0;bottom:0;z-index:6;background:color-mix(i
 .links{display:flex;flex-wrap:wrap;gap:8px;padding:0 20px 18px}
 .links a{font-family:var(--f-mono);font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--ink);text-decoration:none;border:1px solid var(--line);padding:6px 10px;border-radius:4px}
 .copy{display:inline-flex;align-items:center;gap:6px;background:none;border:0;padding:0;font-family:var(--f-mono);font-size:12.5px;font-weight:400;text-decoration:underline dotted;text-underline-offset:3px;color:inherit}
+.copy{cursor:pointer;-webkit-tap-highlight-color:transparent;text-align:left}
+.copy::after{content:"⧉";margin-left:5px;font-size:.85em;opacity:.55;text-decoration:none;display:inline-block}
+.copy:active{opacity:.6}
+.copy.copy-name{font-family:inherit;font-size:inherit;font-weight:inherit;text-decoration:none;line-height:inherit;display:inline;padding:0}
+.toast{max-width:calc(100vw - 32px);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .note{font-size:13px;color:var(--muted);border-left:2px solid var(--accent);padding:2px 0 2px 12px}
 .note b{color:var(--ink);font-weight:500}
 
