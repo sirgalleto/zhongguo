@@ -61,7 +61,7 @@ git push origin main
 ## 5. Verify live
 
 1. GitHub → **Actions** → "pages build and deployment" turns green (about 1 min).
-2. Open `https://zhongguo.galle.to/?v=<anything>` to skip the CDN cache and confirm the change.
+2. Open `https://zhongguo.galle.to/?v=<anything>` to skip the CDN cache and confirm the change. This is the only reason to load the live site. To look anything up, read the code in the repo (see AGENTS.md).
 3. On the phone, reload or reopen the home-screen app while online.
 
 GitHub's CDN and the browser cache files for up to **10 minutes**. A plain reload can show the old version for that long. That's normal, not a failed deploy.

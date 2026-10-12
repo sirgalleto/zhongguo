@@ -14,6 +14,14 @@ Plain HTML, CSS and JS. No framework, no bundler, no build step. GitHub Pages se
 - Big or risky changes (structure, design direction, deploy setup): propose first, build after a yes.
 - Design experiments go on a branch. `main` is what the phone runs.
 
+## Looking things up: read the code, don't fetch the site
+
+To find out what the app contains or how it behaves (a day's plan, a phrase, a hotel, a style), **read the files in this repo** (`git pull` first, then `trip-data.js`, `phrases.js`, `app.js`, `styles.css`). If you don't have a clone, read them from GitHub (`sirgalleto/zhongguo`, branch `main`).
+
+Do **not** fetch `https://zhongguo.galle.to` to look things up. The live site sits behind a CDN and browser caches, so it can be up to 10 minutes stale, and it only shows the rendered result, not the source.
+
+The only time to load the live site is the last step of shipping, to confirm a deploy went out (see [RELEASING.md](RELEASING.md) step 5).
+
 ## Layout
 
 | Path | What it is | Edit when |
