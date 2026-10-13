@@ -69,7 +69,8 @@ const PLAN={
     {text:'Xintiandi: shikumen lanes, shops and cafes around dusk. DiDi about 20 min',time:'17:00',name:'新天地',ref:'马当路245号',map:'新天地 马当路245号'},
     {text:'Shanghai Tower deck (118F): city lights from the top. Open 08:30 to 22:00, last entry 21:30. DiDi about 20 min',time:'18:30',tag:'Maybe',name:'上海之巅观光厅',ref:'银城中路501号',map:'上海中心大厦 银城中路501号'},
     {text:'Lujiazui at street level: walk the riverside under the towers',time:'19:45',name:'陆家嘴',map:'陆家嘴滨江'},
-    {text:'Bund at night: Metro Line 2 Lujiazui to Nanjing East Rd (1 stop), walk to the riverside platform. Lights about 15 min after sunset until 23:00',time:'20:30',name:'外滩',map:'外滩 南京东路'}],
+    {text:'Bund at night: Metro Line 2 Lujiazui to Nanjing East Rd (1 stop), walk to the riverside platform. Lights about 15 min after sunset until 23:00',time:'20:30',name:'外滩',map:'外滩 南京东路'},
+    {text:'Late dinner: Long Time Ago lamb skewers, top floor of No.1 Department Store at the west end of Nanjing East Rd, walking distance from the hotel. Open 11:00 to 03:00',time:'21:45',name:'很久以前羊肉串',ref:'南京路步行街第一百货商业中心B馆6楼',map:'很久以前羊肉串 第一百货'}],
     tip:'Tuesday: Yu Garden and museums are open. Arrive at the Bund before 20:30 for the lights with fewer crowds. Tap a name or address to copy it into DiDi or Amap.'},
   '2026-10-14':{t:'Train to Beijing',i:['Morning coffee, pack, check out','Evening walk around Qianmen and Dashilar, close to the hotel','Peking duck dinner']},
   '2026-10-15':{t:'Imperial core',i:[
