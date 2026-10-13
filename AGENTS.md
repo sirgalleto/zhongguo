@@ -75,9 +75,11 @@ Each entry is `[English, 汉字, pinyin with tone marks, optional spoken text]`.
 - To swap a photo, change its `q` and push, then check the result visually. Search matches can be wrong.
 - Credits must stay visible in the app.
 
-## Offline
+## Offline and updates
 
-`sw.js` is network-first with a cache fallback and pre-caches the shell plus every photo in `img/credits.json`. Edits show up on their own. Bump `CACHE` only to force a full re-download. Add any new top-level file to `SHELL`.
+`sw.js` revalidates every same-origin request (`cache: 'no-cache'`), photos are cache-first, and the app reloads once when a new service worker takes over. Pushed changes appear on the next open; don't add `?v=` hacks. Bump `CACHE` only for new top-level files (add them to `SHELL`) or a forced reset.
+
+Ticked plan items are stored by `name` (or an explicit `id`), so keep a stop's `name` stable when editing its text.
 
 ## Shipping
 

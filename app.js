@@ -338,7 +338,7 @@ function renderPlan(){
     lastCity=d.c;
     const p=PLAN[d.k]||{t:'',i:[]};const c=CITIES[d.c];
     const n=DAYS.indexOf(d)+1;
-    const items=p.i.map(norm).map(it=>{const id=`${d.k}-${hash(it.text)}`;return `<li><label><input type="checkbox" id="pc-${id}" data-id="${id}" ${done[id]?'checked':''}><span><span class="txt">${esc(it.text)}</span>${meta(it,d.c)}</span></label></li>`}).join('');
+    const items=p.i.map(norm).map(it=>{const id=`${d.k}-${hash(it.id||it.name||it.text)}`, old=`${d.k}-${hash(it.text)}`;if(done[old]&&!done[id]){done[id]=1;store.set('cn-plan-done',done)}return `<li><label><input type="checkbox" id="pc-${id}" data-id="${id}" ${done[id]?'checked':''}><span><span class="txt">${esc(it.text)}</span>${meta(it,d.c)}</span></label></li>`}).join('');
     return gal+`<article class="pday${d.k===t?' today':''}${d.k<t?' past':''}" style="--cc:var(--c-${d.c})" id="day-${d.k}">
       <header><span class="zh">${c.zh}</span><div><b>${esc(p.t)}</b><span>Day ${n} · ${fmt(d.k,{weekday:'long',month:'short',day:'numeric'})}</span></div>${d.k===t?'<span class="tag" style="background:var(--stamp);border-color:var(--stamp);color:var(--card)">Today</span>':''}</header>
       <ul>${items}</ul>
@@ -369,7 +369,7 @@ function fillGalleries(){
 /* ---------- Dictionary ---------- */
 const ICON_SAY='<svg viewBox="0 0 24 24"><path d="M11 5 6 9H2v6h4l5 4z"/><path d="M15.5 8.5a5 5 0 0 1 0 7M19 5a10 10 0 0 1 0 14"/></svg>';
 const ICON_SHOW='<svg viewBox="0 0 24 24"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/></svg>';
-let dq='';
+let dq=store.get('cn-dict-q','');
 function renderDict(){
   const q=dq.trim().toLowerCase();
   const strip=s=>s.normalize('NFD').replace(/[̀-ͯ]/g,'').toLowerCase();
@@ -385,7 +385,7 @@ function initDict(){
   $('#p-dictionary').innerHTML=`<input class="search" id="dsearch" type="search" placeholder="Search English, pinyin or 汉字" aria-label="Search phrases"><div id="dict-list" style="display:flex;flex-direction:column;gap:16px"></div>
   <div class="note">Tap the speaker to hear it. Tap the arrows to show the phrase full screen to a driver or waiter.<div class="mono" id="voice-name" style="margin-top:6px;font-size:11px"></div></div>`;
   pickVoice();
-  $('#dsearch').oninput=e=>{dq=e.target.value;renderDict()};
+  $('#dsearch').value=dq;$('#dsearch').oninput=e=>{dq=e.target.value;store.set('cn-dict-q',dq);renderDict()};
   renderDict();
 }
 /* Mandarin voice: pick a real mainland zh-CN voice instead of the browser default.
@@ -458,5 +458,13 @@ go(TABS.includes(h)?h:store.get('cn-tab','itinerary'),false);
 document.addEventListener('visibilitychange',()=>{if(!document.hidden&&!sim)renderAll()});
 
 /* Offline support when installed from its own host (ignored inside the claude.ai viewer) */
-try{if('serviceWorker' in navigator&&/^https?:$/.test(location.protocol)&&!/claude/.test(location.host)){navigator.serviceWorker.register('sw.js').catch(()=>{})}}catch(e){}
+/* Updates: check for a new service worker on every open, and reload once when it takes over,
+   so a pushed change appears without clearing caches. */
+try{if('serviceWorker' in navigator&&/^https?:$/.test(location.protocol)&&!/claude/.test(location.host)){
+  const hadController=!!navigator.serviceWorker.controller;let reloaded=false;
+  navigator.serviceWorker.register('sw.js',{updateViaCache:'none'}).then(reg=>{
+    document.addEventListener('visibilitychange',()=>{if(!document.hidden)reg.update().catch(()=>{})});
+  }).catch(()=>{});
+  navigator.serviceWorker.addEventListener('controllerchange',()=>{if(hadController&&!reloaded){reloaded=true;location.reload()}});
+}}catch(e){}
 })();

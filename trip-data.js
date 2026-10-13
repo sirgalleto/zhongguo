@@ -64,6 +64,7 @@ const PLAN={
     {text:'Yongyuan Rd near Jing\'an Temple: first stores, PANE, Unitree, Baxter. Off today\'s route',tag:'If time',name:'永源路',map:'永源路 静安寺'}],
     tip:'Tap a name or address to copy it, paste into DiDi or Amap, and pick the result in 徐汇区 or 黄浦区. From FUFU onward everything is walkable. Sinan Mansions is out. "Ye Dongjing" (夜东京) from Blossoms is fictional, so Jinxian Rd itself is the set.'},
   '2026-10-13':{t:'Yu Garden, M50, Xintiandi, towers and the Bund',i:[
+    {text:'Xiaolongbao at Nanxiang Steamed Bun, the century-old shop at Yu Garden (Michelin listed). Expect a queue',time:'13:15',name:'南翔馒头店',ref:'豫园路85号',map:'南翔馒头店 豫园路85号'},
     {text:'Yu Garden first, because of the 16:00 last entry. Enter at the north gate. Open 9:00 to 16:30, closed Mondays',time:'13:45',name:'豫园',ref:'福佑路168号',map:'豫园 福佑路168号'},
     {text:'M50 art district: galleries and studios in old textile mills. DiDi about 25 min. Gallery hours vary, most close around 18:00',time:'15:15',name:'M50创意园',ref:'莫干山路50号',map:'M50创意园 莫干山路50号'},
     {text:'Xintiandi: shikumen lanes, shops and cafes around dusk. DiDi about 20 min',time:'17:00',name:'新天地',ref:'马当路245号',map:'新天地 马当路245号'},

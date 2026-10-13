@@ -49,9 +49,13 @@ See **[RELEASING.md](RELEASING.md)**.
 Push to `main`. Pages settings: **Deploy from a branch → `main` / `(root)`**, custom domain `zhongguo.galle.to`, Enforce HTTPS.
 `.nojekyll` turns off Jekyll so files are served exactly as they are. `CNAME` holds the custom domain: do not delete it, or Pages drops `zhongguo.galle.to`.
 
-## Offline
+## Offline and updates
 
-`sw.js` caches the app and photos. It fetches fresh files when online and falls back to the cache offline, so normal edits show up on their own. Bump `CACHE` in `sw.js` to force every phone to re-download everything.
+`sw.js` caches the app and photos for offline use. Every request revalidates with the server (`cache: 'no-cache'`, a cheap 304 when nothing changed), the service worker is registered with `updateViaCache: 'none'`, checks for updates whenever the app is reopened, and reloads once when a new version takes over. So a push shows up the next time the app is opened, without waiting out GitHub Pages' 10-minute cache. Bump `CACHE` only to force a full re-download.
+
+## Saved on the phone
+
+`localStorage` keeps: ticked plan items (`cn-plan-done`), the open tab (`cn-tab`), the Plan city filter (`cn-plan-filter`), the Dictionary search (`cn-dict-q`) and the day the seal last stamped (`cn-stamp-day`). Ticks are keyed by the item's `name` (or `id`), so editing an item's text keeps its tick.
 
 ## Photos
 

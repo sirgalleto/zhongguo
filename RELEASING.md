@@ -40,12 +40,11 @@ In the browser, at phone width:
 
 ## 3. Service worker: bump or not?
 
-`sw.js` is network-first, so normal edits reach phones without a bump.
+Normal edits need nothing: the service worker revalidates every file and the app reloads itself once when a new version is detected.
 
-Bump `CACHE` in `sw.js` (`china-trip-v2` → `v3`) **only** when:
+Bump `CACHE` in `sw.js` (`china-trip-v3` → `v4`) **only** when:
 
 - you add, rename or remove a top-level file (also update `SHELL`)
-- you change `sw.js` logic
 - you need every phone to throw away its cache
 
 ## 4. Commit and push
@@ -64,7 +63,7 @@ git push origin main
 2. Open `https://zhongguo.galle.to/?v=<anything>` to skip the CDN cache and confirm the change. This is the only reason to load the live site. To look anything up, read the code in the repo (see AGENTS.md).
 3. On the phone, reload or reopen the home-screen app while online.
 
-GitHub's CDN and the browser cache files for up to **10 minutes**. A plain reload can show the old version for that long. That's normal, not a failed deploy.
+The service worker skips GitHub's 10-minute cache, so the installed app shows the change the next time it's opened (close it fully and reopen). A plain browser tab without the service worker can still show the old version for up to 10 minutes.
 
 ## 6. Photos (only if `scripts/image_queries.json` changed)
 
