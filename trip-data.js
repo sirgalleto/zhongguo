@@ -78,7 +78,7 @@ const PLAN={
   '2026-10-15':{t:'Forbidden City by day, bouldering at night',i:[
     {text:'Old Beijing breakfast: douzhi (fermented mung bean drink, an acquired taste) with jiaoquan rings. Near the hotel',time:'10:00',name:'尹三豆汁',ref:'东晓市街176号',map:'尹三豆汁 东晓市街176号'},
     {text:'Backup breakfast with a milder douzhi, plus wandouhuang and lvdagunr',time:'10:00',tag:'Backup',name:'老磁器口豆汁店',ref:'天坛路',map:'老磁器口豆汁店 天坛店'},
-    {text:'Specialty coffee at Berry Beans in the Dashilar hutongs: pour-over focus, baristas taste each cup. Opens around 10:00 (sources vary). About 15 min to the Meridian Gate by DiDi',time:'10:40',name:'Berry Beans',ref:'朱家胡同7号',map:'Berry Beans 朱家胡同7号'},
+    {text:'Specialty coffee at Voyage Coffee by Sanlihe Park: Beijing roaster from 798, Coffee Review scores of 93 and 90. Try a single-origin pour-over. Open 10:00 to 18:00. About 1.8 km north of breakfast, then about 2 km walk or a short DiDi to the Meridian Gate. If Amap misses the address, search "VOYAGE COFFEE 三里河"',time:'10:40',name:'VOYAGE COFFEE 三里河店',ref:'东城区长巷五条19号',map:'VOYAGE COFFEE 三里河'},
     {text:'Forbidden City. Arrive at the Meridian Gate between 11:00 and 12:00: valid for both morning and afternoon sessions. Show your original passport. Tickets: standard + Gallery of Clocks + Treasure Gallery',time:'11:30',status:'confirmed',ref:'20261008910087807065',name:'故宫博物院 午门',map:'故宫博物院 午门'},
     {text:'Inside: Gallery of Clocks (Fengxian Hall) and Treasure Gallery (Ningshou Palace, east side). Last entry 15:40. Exit north at the Gate of Divine Prowess',time:'13:30',name:'神武门',map:'故宫 神武门'},
     {text:'Jingshan Park hill, right across the north gate, for the view over the palace roofs',time:'15:00',tag:'If time',name:'景山公园',map:'景山公园'},
