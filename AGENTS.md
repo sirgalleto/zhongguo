@@ -53,6 +53,7 @@ Scripts load in order `trip-data.js` → `ideas.js` → `phrases.js` → `app.js
 - `TRANSIT[date]` uses the same `{text, status, ref}` shape for travel days.
 - City keys: `sh bj xa cd cq sz gz`. Each has a color token `--c-<key>` in `styles.css`.
 - **Only add what the owner confirmed to `PLAN`.** No suggestions, backups, "If time" extras, second options or alternative venues unless he picked them. Suggestions go in `ideas.js` (same item shape, grouped under `h`) or the chat; when he picks one, move it to `PLAN` and delete it from `IDEAS`. If he asked for a slot (breakfast, a gym) but hasn't picked the place, write the slot as "not picked yet". Never invent bookings, refs or prices.
+- **Plan around queues when there's a deadline after.** Famous "must-try" places can mean 1 to 2 hour waits at peak meal times. When something time-boxed follows (a gym, a booking, a train), lead with a place that has confirmed hours and short waits, say the expected wait upfront, and mention taking a queue number online (Dianping/Meituan 排队取号) before going.
 - **Every place must be verified before it goes in.** Confirm the name and street address with a source (Ctrip, Dianping, Michelin, official news) and put the exact Chinese address in `ref` and the place name in `name` (Chinese if it has one). Both render as tap-to-copy chips with a toast. If you can't confirm an address, say so in the text instead of guessing a map keyword.
 - **No money or booking numbers in the app or the repo**: no prices, totals, payment details or hotel booking numbers. The repo is public.
 
