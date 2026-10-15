@@ -329,7 +329,6 @@ function renderStays(){
 /* ---------- Plan ---------- */
 let planFilter=store.get('cn-plan-filter','all');
 function renderPlan(){
-  const done=store.get('cn-plan-done',{});
   const t=today();
   const chips=['all',...STAYS.map(s=>s.c)].map(c=>`<button class="chip" data-f="${c}" aria-pressed="${planFilter===c}">${c==='all'?'All days':CITIES[c].en}</button>`).join('');
   let lastCity=null;

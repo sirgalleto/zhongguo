@@ -26,7 +26,8 @@ The only time to load the live site is the last step of shipping, to confirm a d
 
 | Path | What it is | Edit when |
 |---|---|---|
-| `trip-data.js` | `CITIES`, `STAYS`, `TRANSIT`, `PLAN` | Bookings, plan ideas, trains, hotels |
+| `trip-data.js` | `CITIES`, `STAYS`, `TRANSIT`, `PLAN` | Bookings, confirmed plan, trains, hotels |
+| `ideas.js` | `IDEAS`: suggestions and guides per day (the "Ideas nearby" sheet) | Anything not confirmed yet |
 | `phrases.js` | `DICT` for the Dictionary tab | Adding or fixing phrases |
 | `app.js` | Rendering, tabs, animations, speech | Behavior changes |
 | `styles.css` | Tokens and components | Visual changes |
@@ -35,23 +36,22 @@ The only time to load the live site is the last step of shipping, to confirm a d
 | `img/` | City photos + `credits.json` | Never by hand, see Photos |
 | `scripts/` | Photo fetcher, preview builder | Tooling only |
 
-Scripts load in order `trip-data.js` → `phrases.js` → `app.js`. Data files only declare top-level `const`s; `app.js` reads them.
+Scripts load in order `trip-data.js` → `ideas.js` → `phrases.js` → `app.js`. Data files only declare top-level `const`s; `app.js` reads them.
 
 ## Data conventions (`trip-data.js`)
 
 - Dates are `YYYY-MM-DD` strings. The trip runs `2026-10-11` to `2026-11-04`.
-- A `PLAN` item is either a string (an idea, no label) or an object:
+- A `PLAN` item is an object with a heading `h` (the topic: Breakfast, Coffee, Highlight, Dinner…). Consecutive items with the same `h` render under one heading. No checkboxes.
   ```js
-  {text:'Forbidden City', status:'confirmed', ref:'2026…', time:'09:00', map:'故宫博物院'}
+  {h:'Highlight', text:'Forbidden City', status:'confirmed', ref:'2026…', time:'09:00', map:'故宫博物院'}
   ```
   `status` is `'confirmed'` (green "Confirmed") or `'tobook'` (amber "To book"). `ref` renders as a tap-to-copy reference.
   `name` and `ref` (place name, Chinese address) render as tap-to-copy chips. `tag` adds a neutral label such as `'If time'`.
   Never drop a stop the owner asked for to make a day fit; tag it `'If time'` instead.
   `map` is an Amap search keyword (Chinese works best, e.g. `'武康大楼'`) and renders an "Amap ↗" link scoped to that day's city.
 - `TRANSIT[date]` uses the same `{text, status, ref}` shape for travel days.
-- Checkbox state is keyed by the item's text. Rewording an item resets its tick, which is fine.
 - City keys: `sh bj xa cd cq sz gz`. Each has a color token `--c-<key>` in `styles.css`.
-- **Only add what the owner confirmed.** No suggestions, backups, "If time" extras, second options or alternative venues unless he picked them. Suggestions go in the chat; he picks, then it goes in the app. If he asked for a slot (breakfast, a gym) but hasn't picked the place, write the slot as "not picked yet". Never invent bookings, refs or prices.
+- **Only add what the owner confirmed to `PLAN`.** No suggestions, backups, "If time" extras, second options or alternative venues unless he picked them. Suggestions go in `ideas.js` (same item shape, grouped under `h`) or the chat; when he picks one, move it to `PLAN` and delete it from `IDEAS`. If he asked for a slot (breakfast, a gym) but hasn't picked the place, write the slot as "not picked yet". Never invent bookings, refs or prices.
 - **Every place must be verified before it goes in.** Confirm the name and street address with a source (Ctrip, Dianping, Michelin, official news) and put the exact Chinese address in `ref` and the place name in `name` (Chinese if it has one). Both render as tap-to-copy chips with a toast. If you can't confirm an address, say so in the text instead of guessing a map keyword.
 - **No money or booking numbers in the app or the repo**: no prices, totals, payment details or hotel booking numbers. The repo is public.
 
@@ -78,8 +78,6 @@ Each entry is `[English, 汉字, pinyin with tone marks, optional spoken text]`.
 ## Offline and updates
 
 `sw.js` revalidates every same-origin request (`cache: 'no-cache'`), photos are cache-first, and the app reloads once when a new service worker takes over. Pushed changes appear on the next open; don't add `?v=` hacks. Bump `CACHE` only for new top-level files (add them to `SHELL`) or a forced reset.
-
-Ticked plan items are stored by `name` (or an explicit `id`), so keep a stop's `name` stable when editing its text.
 
 ## Shipping
 

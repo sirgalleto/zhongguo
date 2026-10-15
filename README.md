@@ -11,7 +11,8 @@ Plain static files, no build step. GitHub Pages serves the repo root as-is.
 ```
 index.html
 styles.css
-trip-data.js          ← cities, hotels, trains, daily plan. Edit this for trip changes
+trip-data.js          ← cities, hotels, trains, confirmed daily plan. Edit this for trip changes
+ideas.js              ← suggestions and guides per day (Ideas nearby sheet), not the plan
 phrases.js            ← dictionary phrases
 app.js                rendering, animations, tabs
 sw.js                 offline cache
@@ -30,7 +31,8 @@ scripts/
 | Change | File |
 |---|---|
 | Add a booking, mark something confirmed | `trip-data.js` (`status: 'confirmed'`, `ref`) |
-| Add or remove a plan idea | `trip-data.js` → `PLAN` |
+| Add or remove a confirmed stop | `trip-data.js` → `PLAN` (with a heading `h`) |
+| Add a suggestion or guide | `ideas.js` → `IDEAS` |
 | Add a phrase | `phrases.js` |
 | Swap a photo | `scripts/image_queries.json` (the workflow fetches it) |
 
@@ -55,7 +57,7 @@ Push to `main`. Pages settings: **Deploy from a branch → `main` / `(root)`**, 
 
 ## Saved on the phone
 
-`localStorage` keeps: ticked plan items (`cn-plan-done`), the open tab (`cn-tab`), the Plan city filter (`cn-plan-filter`), the Dictionary search (`cn-dict-q`) and the day the seal last stamped (`cn-stamp-day`). Ticks are keyed by the item's `name` (or `id`), so editing an item's text keeps its tick.
+`localStorage` keeps: the open tab (`cn-tab`), the Plan city filter (`cn-plan-filter`), the Dictionary search (`cn-dict-q`) and the day the seal last stamped (`cn-stamp-day`).
 
 ## Photos
 

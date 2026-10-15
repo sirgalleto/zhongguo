@@ -7,7 +7,8 @@ This checklist is what keeps that push from breaking the phone in the middle of 
 
 | Change | File |
 |---|---|
-| Booking, plan idea, train, hotel | `trip-data.js` |
+| Booking, confirmed stop, train, hotel | `trip-data.js` |
+| Suggestion or guide | `ideas.js` |
 | Phrase | `phrases.js` |
 | Behavior | `app.js` |
 | Look | `styles.css` |
@@ -34,7 +35,7 @@ In the browser, at phone width:
   - `2026-10-29` long train day
   - `2026-11-04` departure
 - [ ] Seal only appears on today's city
-- [ ] Accommodation, Plan (photos + checkboxes) and Dictionary (search + audio) open
+- [ ] Accommodation, Plan (photos, headings, Ideas nearby sheet) and Dictionary (search + audio) open
 - [ ] Light and dark mode both readable
 - [ ] No overlay or blank screen. If you see only "Play audio / Close", the `[hidden]` rule in `styles.css` is missing.
 
