@@ -14,6 +14,22 @@ Plain HTML, CSS and JS. No framework, no bundler, no build step. GitHub Pages se
 - Big or risky changes (structure, design direction, deploy setup): propose first, build after a yes.
 - Design experiments go on a branch. `main` is what the phone runs. Delete the branch once it's merged or dropped: `main` should be the only branch.
 
+## Attack every plan before giving it
+
+Any recommendation (a place, a route, a day plan, a timing) goes through two passes, like a GAN: draft it, then attack it as a critic whose job is to make it fail. Fix what breaks, then present it. Never send the first draft.
+
+Attack it on:
+
+- **Wait and crowds**: famous or "must-try" places at peak times (lunch, 6:00 PM to 8:00 PM dinner, weekends, holidays) can mean 1 to 2 hour queues. Check for an online queue number (Dianping/Meituan 排队取号) or reservations.
+- **Hours and closures**: today's opening hours, last order or last entry, weekly closing day, seasonal changes. A source from years ago is not confirmed.
+- **Deadlines after it**: what comes next (gym closing, booking slot, train) and the real buffer, including the wait, the meal, and travel.
+- **Getting there**: real travel time at that hour (rush hour DiDi, metro transfers, security lines at Tiananmen), and where he starts from (he may need to go back to the hotel first).
+- **Fit for him**: late starts, specialty coffee after breakfast, eating alone (solo portions, one pot each), what he asked for and nothing extra.
+- **Entry requirements**: tickets, passport, reservations, cash only, foreign cards.
+- **Fallback**: for anything with a real risk, name a backup that avoids that risk, close by.
+
+In the reply, lead with the option that survives the attack, not the most famous one. Add a short **Risks checked** line with what could still go wrong (for example "expect a 30 min wait after 6:00 PM").
+
 ## Looking things up: read the code, don't fetch the site
 
 To find out what the app contains or how it behaves (a day's plan, a phrase, a hotel, a style), **read the files in this repo** (`git pull` first, then `trip-data.js`, `phrases.js`, `app.js`, `styles.css`). If you don't have a clone, read them from GitHub (`sirgalleto/zhongguo`, branch `main`).
@@ -53,7 +69,6 @@ Scripts load in order `trip-data.js` → `ideas.js` → `phrases.js` → `app.js
 - `TRANSIT[date]` uses the same `{text, status, ref}` shape for travel days.
 - City keys: `sh bj xa cd cq sz gz`. Each has a color token `--c-<key>` in `styles.css`.
 - **Only add what the owner confirmed to `PLAN`.** No suggestions, backups, "If time" extras, second options or alternative venues unless he picked them. Suggestions go in `ideas.js` (same item shape, grouped under `h`) or the chat; when he picks one, move it to `PLAN` and delete it from `IDEAS`. If he asked for a slot (breakfast, a gym) but hasn't picked the place, write the slot as "not picked yet". Never invent bookings, refs or prices.
-- **Plan around queues when there's a deadline after.** Famous "must-try" places can mean 1 to 2 hour waits at peak meal times. When something time-boxed follows (a gym, a booking, a train), lead with a place that has confirmed hours and short waits, say the expected wait upfront, and mention taking a queue number online (Dianping/Meituan 排队取号) before going.
 - **Every place must be verified before it goes in.** Confirm the name and street address with a source (Ctrip, Dianping, Michelin, official news) and put the exact Chinese address in `ref` and the place name in `name` (Chinese if it has one). Both render as tap-to-copy chips with a toast. If you can't confirm an address, say so in the text instead of guessing a map keyword.
 - **No money or booking numbers in the app or the repo**: no prices, totals, payment details or hotel booking numbers. The repo is public.
 
