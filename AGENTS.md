@@ -12,7 +12,7 @@ Plain HTML, CSS and JS. No framework, no bundler, no build step. GitHub Pages se
 - **A question is a question.** Answer it and wait. Only change code when asked to change something.
 - Keep replies short and practical. No em dashes in copy or replies.
 - Big or risky changes (structure, design direction, deploy setup): propose first, build after a yes.
-- Design experiments go on a branch. `main` is what the phone runs.
+- Design experiments go on a branch. `main` is what the phone runs. Delete the branch once it's merged or dropped: `main` should be the only branch.
 
 ## Looking things up: read the code, don't fetch the site
 
