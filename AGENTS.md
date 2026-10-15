@@ -51,7 +51,7 @@ Scripts load in order `trip-data.js` → `phrases.js` → `app.js`. Data files o
 - `TRANSIT[date]` uses the same `{text, status, ref}` shape for travel days.
 - Checkbox state is keyed by the item's text. Rewording an item resets its tick, which is fine.
 - City keys: `sh bj xa cd cq sz gz`. Each has a color token `--c-<key>` in `styles.css`.
-- Only add what the owner actually confirmed or asked for. Never invent bookings, refs or prices.
+- **Only add what the owner confirmed.** No suggestions, backups, "If time" extras, second options or alternative venues unless he picked them. Suggestions go in the chat; he picks, then it goes in the app. If he asked for a slot (breakfast, a gym) but hasn't picked the place, write the slot as "not picked yet". Never invent bookings, refs or prices.
 - **Every place must be verified before it goes in.** Confirm the name and street address with a source (Ctrip, Dianping, Michelin, official news) and put the exact Chinese address in `ref` and the place name in `name` (Chinese if it has one). Both render as tap-to-copy chips with a toast. If you can't confirm an address, say so in the text instead of guessing a map keyword.
 - **No money or booking numbers in the app or the repo**: no prices, totals, payment details or hotel booking numbers. The repo is public.
 
