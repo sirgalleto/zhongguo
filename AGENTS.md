@@ -41,9 +41,10 @@ Scripts load in order `trip-data.js` → `ideas.js` → `phrases.js` → `app.js
 ## Data conventions (`trip-data.js`)
 
 - Dates are `YYYY-MM-DD` strings. The trip runs `2026-10-11` to `2026-11-04`.
+- **Times are always 12-hour with AM/PM** (`9:00 AM`, `12:00 PM`, `10:30 PM`), in `time` fields, text, tips and `ideas.js`. Never 24-hour. Same in chat replies.
 - A `PLAN` item is an object with a heading `h` (the topic: Breakfast, Coffee, Highlight, Dinner…). Consecutive items with the same `h` render under one heading. No checkboxes.
   ```js
-  {h:'Highlight', text:'Forbidden City', status:'confirmed', ref:'2026…', time:'09:00', map:'故宫博物院'}
+  {h:'Highlight', text:'Forbidden City', status:'confirmed', ref:'2026…', time:'9:00 AM', map:'故宫博物院'}
   ```
   `status` is `'confirmed'` (green "Confirmed") or `'tobook'` (amber "To book"). `ref` renders as a tap-to-copy reference.
   `name` and `ref` (place name, Chinese address) render as tap-to-copy chips. `tag` adds a neutral label such as `'If time'`.
