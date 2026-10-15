@@ -273,3 +273,30 @@ nav.tabs{position:fixed;left:0;right:0;bottom:0;z-index:6;background:color-mix(i
 }
 @media (prefers-reduced-motion:reduce){.route .fill{transition:none}.pday li .txt{transition:none}}
 @media (max-width:380px){.summary b{font-size:18px}.day{grid-template-columns:52px 3px 1fr auto;gap:10px}}
+
+/* Ideas: suggestions live apart from the plan. Dashed = not decided */
+.ideas-btn{display:flex;align-items:center;gap:10px;width:calc(100% - 32px);margin:0 16px 14px;padding:10px 12px;background:transparent;border:1px dashed color-mix(in srgb,var(--cc) 45%,var(--line));border-radius:4px;color:var(--ink);font-family:var(--f-mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase;text-align:left;cursor:pointer}
+.ideas-btn span{flex:1}
+.ideas-btn b{font-weight:500;color:var(--cc)}
+.ideas-btn i{font-style:normal;color:var(--muted)}
+.sheet{border:0;padding:0;margin:auto auto 0;width:100%;max-width:640px;max-height:86vh;background:var(--card);color:var(--ink);border-radius:14px 14px 0 0;border-top:1px solid var(--line);overflow:auto;padding-bottom:env(safe-area-inset-bottom,0px)}
+.sheet[open]{animation:sheetUp .28s cubic-bezier(.2,.8,.2,1)}
+.sheet::backdrop{background:color-mix(in srgb,var(--paper) 55%,transparent);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px)}
+@keyframes sheetUp{from{transform:translateY(40px);opacity:0}to{transform:none;opacity:1}}
+.sheet header{position:sticky;top:0;display:flex;align-items:center;gap:14px;padding:16px;background:var(--card);border-bottom:1px solid var(--line)}
+.sheet header::before{content:"";position:absolute;top:6px;left:50%;width:36px;height:3px;margin-left:-18px;border-radius:2px;background:var(--line)}
+.sheet header .zh{font-size:24px;font-weight:300;color:var(--cc);line-height:1;letter-spacing:.06em}
+.sheet header div{flex:1;min-width:0}
+.sheet header b{display:block;font-size:15px;font-weight:500}
+.sheet header span{font-family:var(--f-mono);font-size:10.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.sheet-x{background:none;border:1px solid var(--line);border-radius:4px;width:30px;height:30px;color:var(--muted);cursor:pointer}
+.sheet-note{margin:12px 16px 0;font-family:var(--f-mono);font-size:11px;letter-spacing:.04em;color:var(--muted)}
+.sheet section{padding:6px 16px 4px}
+.sheet h4{font-family:var(--f-mono);font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--cc);font-weight:400;margin:14px 0 4px}
+.sheet ul{list-style:none;margin:0;padding:0}
+.sheet li{padding:10px 0 10px 12px;border-left:1px dashed color-mix(in srgb,var(--cc) 50%,var(--line));margin-bottom:6px;font-size:14px}
+.sheet .guide div{padding:8px 0;border-bottom:1px solid var(--line)}
+.sheet .guide div:last-child{border:0;padding-bottom:20px}
+.sheet .guide b{font-size:13.5px;font-weight:500}
+.sheet .guide p{margin:3px 0 0;font-size:13.5px;color:var(--muted);line-height:1.5}
+@media (prefers-reduced-motion:reduce){.sheet[open]{animation:none}}

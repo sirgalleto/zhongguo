@@ -344,13 +344,33 @@ function renderPlan(){
       <ul>${items}</ul>
       ${TRANSIT[d.k]&&d.kind!=='arrive'?`<div class="transit"><span>${esc(TRANSIT[d.k].text)}</span>${badge(TRANSIT[d.k].status)}</div>`:''}
       ${p.tip?`<div class="tip"><b>Tip</b> ${esc(p.tip)}</div>`:''}
+      ${ideaCount(d.k)?`<button class="ideas-btn" data-ideas="${d.k}"><span>Ideas nearby</span><b>${ideaCount(d.k)}</b><i aria-hidden="true">→</i></button>`:''}
     </article>`;
   }).join('');
   $('#p-plan').innerHTML=`<div class="chips" role="group" aria-label="Filter by city">${chips}</div>${cards}`;
   fillGalleries();
   $('#p-plan').querySelectorAll('.chip').forEach(b=>b.onclick=()=>{planFilter=b.dataset.f;store.set('cn-plan-filter',planFilter);renderPlan()});
+  $('#p-plan').querySelectorAll('[data-ideas]').forEach(b=>b.onclick=()=>openIdeas(b.dataset.ideas));
   $('#p-plan').querySelectorAll('input[type=checkbox]').forEach(cb=>cb.onchange=()=>{const d=store.get('cn-plan-done',{});if(cb.checked)d[cb.dataset.id]=1;else delete d[cb.dataset.id];store.set('cn-plan-done',d)});
 }
+
+/* ---------- Ideas sheet (ideas.js): suggestions, never part of the plan ---------- */
+const IDX=typeof IDEAS!=='undefined'?IDEAS:{};
+const ideaCount=k=>{const x=IDX[k];return x?x.groups.reduce((n,g)=>n+g.items.length,0)+(x.guide||[]).length:0};
+function openIdeas(k){
+  const x=IDX[k],d=DAYS.find(d=>d.k===k);if(!x||!d)return;
+  const sheet=$('#ideas');
+  const groups=x.groups.map(g=>`<section><h4>${esc(g.h)}</h4><ul>${g.items.map(norm).map(it=>`<li><span class="txt">${esc(it.text)}</span>${meta(it,d.c)}</li>`).join('')}</ul></section>`).join('');
+  const guide=(x.guide||[]).length?`<section class="guide"><h4>Guide</h4>${x.guide.map(gd=>`<div><b>${esc(gd.h)}</b><p>${esc(gd.text)}</p></div>`).join('')}</section>`:'';
+  sheet.querySelector('.sheet-body').innerHTML=`
+    <header><span class="zh">${CITIES[d.c].zh}</span><div><b>Ideas nearby</b><span>${esc(x.near)} · ${fmt(k,{month:'short',day:'numeric'})}</span></div><button class="sheet-x" aria-label="Close">✕</button></header>
+    <p class="sheet-note">Not in your plan. Pick one and ask Claude to add it.</p>
+    ${groups}${guide}`;
+  sheet.style.setProperty('--cc',`var(--c-${d.c})`);
+  sheet.querySelector('.sheet-x').onclick=()=>sheet.close();
+  if(sheet.showModal)sheet.showModal();else sheet.setAttribute('open','');
+}
+(()=>{const s=$('#ideas');if(s)s.addEventListener('click',e=>{if(e.target===s)s.close()})})();
 
 /* ---------- Photos (docs/img, fetched by the GitHub Action) ---------- */
 let PHOTOS=null;
@@ -428,7 +448,7 @@ function selectText(el){try{const r=document.createRange();r.selectNodeContents(
 $('#show-close').onclick=()=>{$('#show').hidden=true};
 $('#show-say').onclick=()=>showing&&say(showing[3]||showing[1]);
 document.addEventListener('keydown',e=>{if(e.key==='Escape')$('#show').hidden=true});
-function toast(m){const t=document.createElement('div');t.className='toast';t.textContent=m;document.body.appendChild(t);setTimeout(()=>t.remove(),1800)}
+function toast(m){const t=document.createElement('div');t.className='toast';t.textContent=m;(document.querySelector('dialog[open]')||document.body).appendChild(t);setTimeout(()=>t.remove(),1800)}
 
 /* ---------- Tabs ---------- */
 const TABS=['itinerary','stays','plan','dictionary'];

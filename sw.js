@@ -3,8 +3,8 @@
    10 minutes old. Every same-origin request here uses cache:'no-cache', which makes the browser
    revalidate with the server (a cheap 304 when nothing changed), so a push shows up on the next
    open. Offline, the cached copy is used. Bump CACHE only to force a full re-download. */
-const CACHE='china-trip-v3';
-const SHELL=['./','./index.html','./styles.css','./trip-data.js','./phrases.js','./app.js','./manifest.webmanifest','./icons/icon-192.png','./icons/icon-512.png','./icons/apple-touch-icon.png'];
+const CACHE='china-trip-v4';
+const SHELL=['./','./index.html','./styles.css','./trip-data.js','./ideas.js','./phrases.js','./app.js','./manifest.webmanifest','./icons/icon-192.png','./icons/icon-512.png','./icons/apple-touch-icon.png'];
 const fresh=u=>new Request(u,{cache:'reload'});
 
 self.addEventListener('install',e=>{e.waitUntil(caches.open(CACHE).then(async c=>{
