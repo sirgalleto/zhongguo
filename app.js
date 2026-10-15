@@ -338,10 +338,10 @@ function renderPlan(){
     lastCity=d.c;
     const p=PLAN[d.k]||{t:'',i:[]};const c=CITIES[d.c];
     const n=DAYS.indexOf(d)+1;
-    const items=p.i.map(norm).map(it=>{const id=`${d.k}-${hash(it.id||it.name||it.text)}`, old=`${d.k}-${hash(it.text)}`;if(done[old]&&!done[id]){done[id]=1;store.set('cn-plan-done',done)}return `<li><label><input type="checkbox" id="pc-${id}" data-id="${id}" ${done[id]?'checked':''}><span><span class="txt">${esc(it.text)}</span>${meta(it,d.c)}</span></label></li>`}).join('');
+    const items=groupList(p.i.map(norm),d.c);
     return gal+`<article class="pday${d.k===t?' today':''}${d.k<t?' past':''}" style="--cc:var(--c-${d.c})" id="day-${d.k}">
       <header><span class="zh">${c.zh}</span><div><b>${esc(p.t)}</b><span>Day ${n} · ${fmt(d.k,{weekday:'long',month:'short',day:'numeric'})}</span></div>${d.k===t?'<span class="tag" style="background:var(--stamp);border-color:var(--stamp);color:var(--card)">Today</span>':''}</header>
-      <ul>${items}</ul>
+      <div class="groups">${items}</div>
       ${TRANSIT[d.k]&&d.kind!=='arrive'?`<div class="transit"><span>${esc(TRANSIT[d.k].text)}</span>${badge(TRANSIT[d.k].status)}</div>`:''}
       ${p.tip?`<div class="tip"><b>Tip</b> ${esc(p.tip)}</div>`:''}
       ${ideaCount(d.k)?`<button class="ideas-btn" data-ideas="${d.k}"><span>Ideas nearby</span><b>${ideaCount(d.k)}</b><i aria-hidden="true">→</i></button>`:''}
@@ -351,7 +351,13 @@ function renderPlan(){
   fillGalleries();
   $('#p-plan').querySelectorAll('.chip').forEach(b=>b.onclick=()=>{planFilter=b.dataset.f;store.set('cn-plan-filter',planFilter);renderPlan()});
   $('#p-plan').querySelectorAll('[data-ideas]').forEach(b=>b.onclick=()=>openIdeas(b.dataset.ideas));
-  $('#p-plan').querySelectorAll('input[type=checkbox]').forEach(cb=>cb.onchange=()=>{const d=store.get('cn-plan-done',{});if(cb.checked)d[cb.dataset.id]=1;else delete d[cb.dataset.id];store.set('cn-plan-done',d)});
+}
+
+/* Items with the same `h` (Breakfast, Highlight…) render under one heading */
+function groupList(items,c){
+  const out=[];
+  for(const it of items){const h=it.h||'';if(!out.length||out[out.length-1].h!==h)out.push({h,items:[]});out[out.length-1].items.push(it)}
+  return out.map(g=>`<section>${g.h?`<h4>${esc(g.h)}</h4>`:''}<ul>${g.items.map(it=>`<li><span class="txt">${esc(it.text)}</span>${meta(it,c)}</li>`).join('')}</ul></section>`).join('');
 }
 
 /* ---------- Ideas sheet (ideas.js): suggestions, never part of the plan ---------- */
@@ -360,7 +366,7 @@ const ideaCount=k=>{const x=IDX[k];return x?x.groups.reduce((n,g)=>n+g.items.len
 function openIdeas(k){
   const x=IDX[k],d=DAYS.find(d=>d.k===k);if(!x||!d)return;
   const sheet=$('#ideas');
-  const groups=x.groups.map(g=>`<section><h4>${esc(g.h)}</h4><ul>${g.items.map(norm).map(it=>`<li><span class="txt">${esc(it.text)}</span>${meta(it,d.c)}</li>`).join('')}</ul></section>`).join('');
+  const groups=`<div class="groups">${groupList(x.groups.flatMap(g=>g.items.map(it=>({...norm(it),h:g.h}))),d.c)}</div>`;
   const guide=(x.guide||[]).length?`<section class="guide"><h4>Guide</h4>${x.guide.map(gd=>`<div><b>${esc(gd.h)}</b><p>${esc(gd.text)}</p></div>`).join('')}</section>`:'';
   sheet.querySelector('.sheet-body').innerHTML=`
     <header><span class="zh">${CITIES[d.c].zh}</span><div><b>Ideas nearby</b><span>${esc(x.near)} · ${fmt(k,{month:'short',day:'numeric'})}</span></div><button class="sheet-x" aria-label="Close">✕</button></header>

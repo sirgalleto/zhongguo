@@ -291,10 +291,13 @@ nav.tabs{position:fixed;left:0;right:0;bottom:0;z-index:6;background:color-mix(i
 .sheet header span{font-family:var(--f-mono);font-size:10.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
 .sheet-x{background:none;border:1px solid var(--line);border-radius:4px;width:30px;height:30px;color:var(--muted);cursor:pointer}
 .sheet-note{margin:12px 16px 0;font-family:var(--f-mono);font-size:11px;letter-spacing:.04em;color:var(--muted)}
-.sheet section{padding:6px 16px 4px}
-.sheet h4{font-family:var(--f-mono);font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--cc);font-weight:400;margin:14px 0 4px}
-.sheet ul{list-style:none;margin:0;padding:0}
-.sheet li{padding:10px 0 10px 12px;border-left:1px dashed color-mix(in srgb,var(--cc) 50%,var(--line));margin-bottom:6px;font-size:14px}
+.groups section{padding:4px 16px 2px}
+.groups h4,.guide h4{font-family:var(--f-mono);font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--cc);font-weight:400;margin:14px 0 4px}
+.groups ul{list-style:none;margin:0;padding:0}
+.groups li{padding:8px 0 8px 12px;border-left:1px solid var(--cc);margin-bottom:6px;font-size:14px}
+.pday .groups{padding:4px 0 10px}
+.sheet .groups li{border-left-style:dashed;border-left-color:color-mix(in srgb,var(--cc) 50%,var(--line))}
+.sheet section.guide{padding:6px 16px 4px}
 .sheet .guide div{padding:8px 0;border-bottom:1px solid var(--line)}
 .sheet .guide div:last-child{border:0;padding-bottom:20px}
 .sheet .guide b{font-size:13.5px;font-weight:500}

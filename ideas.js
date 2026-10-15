@@ -18,9 +18,10 @@ const IDEAS={
       {h:'Bouldering tonight',items:[
         {text:'Dedicated bouldering area, shoe and chalk rental, walk-ins OK. Busiest until 20:00, open until 22:00',name:'CAMP4攀岩馆',ref:'中海置业白家庄商务中心A座2层',map:'CAMP4 白家庄商务中心'},
         {text:'Rock Hour. Tue to Fri until 22:00. Navigate to the Chen Lu ice rink. Bouldering wall not confirmed',name:'岩时攀岩馆',ref:'西大望路27号院74栋',map:'陈露国际冰上中心'}]},
-      {h:'After the palace',items:[
-        {text:'Jingshan Park hill, right across the north gate, for the view over the palace roofs',name:'景山公园',map:'景山公园'},
-        {text:'Second coffee: Soloist Coffee Co., V60 single origins, own roasts. Opens around noon',name:'Soloist Coffee',ref:'杨梅竹斜街39号',map:'Soloist Coffee 杨梅竹斜街'}]}
+      {h:'Highlights nearby',items:[
+        {text:'Jingshan Park hill, right across the north gate, for the view over the palace roofs',name:'景山公园',map:'景山公园'}]},
+      {h:'More coffee',items:[
+        {text:'Soloist Coffee Co., V60 single origins, own roasts. Opens around noon',name:'Soloist Coffee',ref:'杨梅竹斜街39号',map:'Soloist Coffee 杨梅竹斜街'}]}
     ],
     guide:[
       {h:'Getting in',text:'Enter only at the Meridian Gate (午门), south side. Walk in from Tiananmen East metro (Line 1), security check on the way. No selfie sticks or tripods.'},
