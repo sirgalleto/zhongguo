@@ -72,6 +72,10 @@ Scripts load in order `trip-data.js` → `ideas.js` → `phrases.js` → `app.js
 - **Every place must be verified before it goes in.** Confirm the name and street address with a source (Ctrip, Dianping, Michelin, official news) and put the exact Chinese address in `ref` and the place name in `name` (Chinese if it has one). Both render as tap-to-copy chips with a toast. If you can't confirm an address, say so in the text instead of guessing a map keyword.
 - **No money or booking numbers in the app or the repo**: no prices, totals, payment details or hotel booking numbers. The repo is public.
 
+## Tours and guides (`ideas.js`)
+
+The owner wants **deep** guides, not basics: history, politics, the people behind a place, and Easter eggs (famous visitors, hidden names, myths debunked). Tie every stop to what he's looking at. Verify dates, names and numbers with a source before adding them, and hedge anything that is only "said to" have happened.
+
 ## Phrases (`phrases.js`)
 
 Each entry is `[English, 汉字, pinyin with tone marks, optional spoken text]`. Use the 4th field when the characters would be read wrong aloud (phone numbers are spoken 幺幺零, not 一百一十).
