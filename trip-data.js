@@ -84,10 +84,12 @@ const PLAN={
     {h:'Highlight',text:'Forbidden City. Arrive at the Meridian Gate between 11:00 AM and 12:00 PM: valid for both morning and afternoon sessions. Show your original passport. Tickets: standard + Gallery of Clocks (Fengxian Hall) + Treasure Gallery (Ningshou Palace). Last gallery entry 3:40 PM',time:'11:30 AM',status:'confirmed',ref:'20261008910087807065',name:'故宫博物院 午门',map:'故宫博物院 午门'},
     {h:'Bouldering',text:'Gym not picked yet',time:'Evening'}],
     tip:'Palace Museum: bring the original passport you booked with, enter only at the Meridian Gate (午门). Morning session: tickets checked by 12:00 PM. Afternoon session: checks start at 11:00 AM. Last entry 4:00 PM, closes 5:00 PM. No selfie sticks or tripods. Ticket help: Visitor Service Center, west side of Duanmen Square.'},
-  '2026-10-16':{t:'Great Wall day',i:[
-    {h:'Highlight',text:'Mutianyu section: cable car up, toboggan down'},
-    {h:'Timing',text:'Leave early, back in the city by late afternoon'},
-    {h:'Dinner',text:'Hotpot or jianbing street snack at night'}]},
+  '2026-10-16':{t:'Great Wall at Mutianyu',i:[
+    {h:'Tickets',text:'Book the entry ticket online before leaving: WeChat mini program 慕田峪长城 or Trip.com, with your passport. Entry is online only, scan the passport at the gate. Buy the shuttle, cable car and toboggan on site, one way each',status:'tobook'},
+    {h:'Getting there',text:'DiDi from the hotel, about 75 km, 1h30 to 1h45. Get off at the visitor center',time:'11:45 AM',name:'慕田峪长城',map:'慕田峪长城 游客中心'},
+    {h:'Highlight',text:'Shuttle bus to the base, enclosed cable car up to Tower 14 (buy one way, not round trip). Quick detour west to Tower 15 for the best ridge view. Walk east, mostly downhill, from Tower 14 to Tower 6. Toboggan down from Tower 6 (chairlift if it rains or the queue is long). Be at Tower 6 by 4:00 PM. Weekday: tickets until 5:00 PM, last entry 5:30 PM, closes 6:00 PM',time:'1:30 PM',name:'慕田峪长城'},
+    {h:'Getting back',text:'Leave around 4:30 PM. Ask your DiDi driver to wait and bring you back (包车), or order the return ride 30 min before you come down. Rush hour, about 2 h to the hotel',time:'4:30 PM'}],
+    tip:'Overcast, around 17°C, colder and windier on the wall: bring a layer and water. Toboggan: hand brake, phone in a zipped pocket, no filming one-handed.'},
   '2026-10-17':{t:'Design and hutongs',i:[
     {h:'Art',text:'798 Art District galleries'},
     {h:'Architecture',text:'Galaxy SOHO (Zaha Hadid) for architecture photos'},
