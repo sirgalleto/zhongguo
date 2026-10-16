@@ -11,10 +11,26 @@
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500&family=Noto+Sans+SC:wght@300;400;500;700&display=swap">
+<!-- Fonts load without blocking the first paint (Google can be slow or blocked in China) -->
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500&family=Noto+Sans+SC:wght@300;400;500;700&display=swap" media="print" onload="this.media='all'">
+<!-- Splash: painted before styles.css and the scripts arrive, removed by app.js -->
+<style>
+html{background:#F3F4F6}
+#splash{position:fixed;inset:0;z-index:99;display:grid;place-content:center;justify-items:center;gap:14px;background:#F3F4F6;color:#0E1116;transition:opacity .35s ease;animation:splashOut .35s ease 6s forwards}
+#splash .zh{font:300 64px/1 "PingFang SC","Noto Sans SC","Microsoft YaHei",sans-serif;letter-spacing:.12em;color:#E5322D}
+#splash .ln{width:72px;height:1px;background:currentColor;opacity:.25;overflow:hidden;position:relative}
+#splash .ln::after{content:"";position:absolute;inset:0;width:40%;background:#E5322D;animation:splashBar 1s ease-in-out infinite}
+#splash small{font:11px ui-monospace,Menlo,monospace;letter-spacing:.14em;text-transform:uppercase;opacity:.55}
+#splash.out{opacity:0;pointer-events:none}
+@keyframes splashBar{from{transform:translateX(-100%)}to{transform:translateX(250%)}}
+@keyframes splashOut{to{opacity:0;visibility:hidden}}
+@media (prefers-color-scheme:dark){html,#splash{background:#08090C}#splash{color:#E8EAF0}#splash .zh{color:#FF5A4E}#splash .ln::after{background:#FF5A4E}}
+@media (prefers-reduced-motion:reduce){#splash .ln::after{animation:none}}
+</style>
 <link rel="stylesheet" href="styles.css">
 </head>
 <body>
+<div id="splash" aria-hidden="true"><span class="zh">中国</span><span class="ln"></span><small>Loading</small></div>
 <header class="top">
   <div class="top-in">
     <div class="brand"><b class="zh">中国</b><span>Oct 11 → Nov 4</span></div>

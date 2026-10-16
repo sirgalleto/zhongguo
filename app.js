@@ -427,6 +427,7 @@ function fillGalleries(){
       <div class="g-strip">${list.map(p=>`<figure class="g-item"><img src="img/${esc(p.file)}" alt="${esc(p.label)}" loading="lazy" decoding="async" onload="this.classList.add('in')">
         <figcaption><b>${esc(p.label)}</b><a href="${esc(p.page)}" target="_blank" rel="noopener">${esc(p.author)} · ${esc(p.license)}</a></figcaption></figure>`).join('')}</div>`;
   });
+  if(lastJump.tab==='plan'&&Date.now()-lastJump.at<4000&&!$('#p-plan').hidden)jumpToday('plan');
 }
 
 /* ---------- Dictionary ---------- */
@@ -501,12 +502,24 @@ function go(tab,scroll){
   TABS.forEach(t=>{$('#p-'+t).hidden=t!==tab;$('#t-'+t).setAttribute('aria-selected',t===tab)});
   if(scroll&&prev!==tab){const el=$('#p-'+tab);el.classList.remove('enter');void el.offsetWidth;el.classList.add('enter')}
   store.set('cn-tab',tab);
+  if(tab==='itinerary'){if(viewIdx>=0)document.documentElement.style.setProperty('--accent',`var(--c-${STAYS[viewIdx].c})`)}
+  else{applyCityAccent();setStatus()}
+  jumpToday(tab);
+}
+/* Every tab opens on today: today's city on the Itinerary, today's hotel, today's plan */
+let lastJump={tab:null,at:0};
+function jumpToday(tab){
+  lastJump={tab,at:Date.now()};
+  const t=today(), inTrip=DAYS.some(d=>d.k===t);
   window.scrollTo(0,0);
-  if(scroll&&tab==='plan'){const el=document.getElementById('day-'+today());if(el)el.scrollIntoView({block:'start'})}
-  if(tab==='itinerary'){
-    if(viewIdx>=0)document.documentElement.style.setProperty('--accent',`var(--c-${STAYS[viewIdx].c})`);
-    if(!journeyScrolled&&curIdx>0){journeyScrolled=true;requestAnimationFrame(()=>scrollToStop(curIdx,false))}
-  }else{applyCityAccent();setStatus()}
+  requestAnimationFrame(()=>{
+    if(tab==='itinerary'){if(curIdx>0)scrollToStop(curIdx,false)}
+    else if(tab==='stays'){const el=document.querySelector('.stay.current');if(el)el.scrollIntoView({block:'start'})}
+    else if(tab==='plan'&&inTrip){
+      if(!document.getElementById('day-'+t)){planFilter='all';store.set('cn-plan-filter','all');renderPlan()}
+      const el=document.getElementById('day-'+t);if(el)el.scrollIntoView({block:'start'})
+    }
+  });
 }
 document.querySelectorAll('.tab').forEach(b=>b.onclick=()=>go(b.dataset.tab,true));
 
@@ -516,9 +529,13 @@ function renderAll(){applyCityAccent();setStatus();renderItinerary();renderStays
 renderAll();initDict();
 const h=(location.hash||'').slice(1);
 go(TABS.includes(h)?h:store.get('cn-tab','itinerary'),false);
+hideSplash();
 
 /* Re-check the date when the app comes back to the foreground (e.g. next morning) */
-document.addEventListener('visibilitychange',()=>{if(!document.hidden&&!sim)renderAll()});
+let renderedDay=today();
+document.addEventListener('visibilitychange',()=>{if(document.hidden||sim)return;renderAll();
+  if(today()!==renderedDay){renderedDay=today();go(store.get('cn-tab','itinerary'),false)}});
+function hideSplash(){const s=document.getElementById('splash');if(!s)return;s.classList.add('out');setTimeout(()=>s.remove(),400)}
 
 /* Offline support when installed from its own host (ignored inside the claude.ai viewer) */
 /* Updates: check for a new service worker on every open, and reload once when it takes over,
