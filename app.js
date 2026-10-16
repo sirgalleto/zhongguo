@@ -369,7 +369,7 @@ function openIdeas(k){
   const guide=(x.guide||[]).length?`<section class="guide"><h4>Guide</h4>${x.guide.map(gd=>`<div><b>${esc(gd.h)}</b><p>${esc(gd.text)}</p></div>`).join('')}</section>`:'';
   sheet.querySelector('.sheet-body').innerHTML=`
     <header><span class="zh">${CITIES[d.c].zh}</span><div><b>Ideas nearby</b><span>${esc(x.near)} · ${fmt(k,{month:'short',day:'numeric'})}</span></div><button class="sheet-x" aria-label="Close">✕</button></header>
-    <p class="sheet-note">Not in your plan. Pick one and ask Claude to add it.</p>
+    ${x.groups.length?'<p class="sheet-note">Not in your plan. Pick one and ask Claude to add it.</p>':''}
     ${groups}${guide}`;
   sheet.style.setProperty('--cc',`var(--c-${d.c})`);
   sheet.querySelector('.sheet-x').onclick=()=>sheet.close();

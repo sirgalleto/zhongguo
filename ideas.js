@@ -9,6 +9,16 @@
    }
 */
 const IDEAS={
+  '2026-10-16':{
+    near:'Mutianyu · Towers 14 to 19',
+    groups:[],
+    guide:[
+      {h:'What a tower is',text:'Stone building on the wall, every 100 to 300 meters. Soldiers lived, stored weapons and kept watch inside. Smoke signals passed tower to tower to warn of attacks. Mutianyu has a very dense concentration of towers.'},
+      {h:'Why they are numbered',text:'Modern numbers (1 to about 23) for visitors, not historical names. Use them as checkpoints: numbers are posted at each tower.'},
+      {h:'Your route, 14 to 19',text:'Tower 14: cable car drop-off, busy, good first photos. 15 to 19: the wall climbs the ridge, steeper, fewer people, best views. Near 19/20: very steep stairs, no handrails in places, go slow.'},
+      {h:'What to look for in any tower',text:'Arched windows for shooting arrows and watching. Crenellations (notched top edge) on both sides of the wall. Stone drainage spouts sticking out of the wall.'}
+    ]
+  },
   '2026-10-15':{
     near:'Qianmen · Forbidden City',
     groups:[
