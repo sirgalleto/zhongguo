@@ -343,6 +343,7 @@ function renderPlan(){
       <div class="groups">${items}</div>
       ${TRANSIT[d.k]&&d.kind!=='arrive'?`<div class="transit"><span>${esc(TRANSIT[d.k].text)}</span>${badge(TRANSIT[d.k].status)}</div>`:''}
       ${p.tip?`<div class="tip"><b>Tip</b> ${esc(p.tip)}</div>`:''}
+      ${TX[d.k]?`<button class="ideas-btn tour-btn" data-tour="${d.k}"><span>Audio tour</span><b>${TX[d.k].stops.length} stops</b><i aria-hidden="true">▶</i></button>`:''}
       ${ideaCount(d.k)?`<button class="ideas-btn" data-ideas="${d.k}"><span>Ideas nearby</span><b>${ideaCount(d.k)}</b><i aria-hidden="true">→</i></button>`:''}
     </article>`;
   }).join('');
@@ -350,6 +351,7 @@ function renderPlan(){
   fillGalleries();
   $('#p-plan').querySelectorAll('.chip').forEach(b=>b.onclick=()=>{planFilter=b.dataset.f;store.set('cn-plan-filter',planFilter);renderPlan()});
   $('#p-plan').querySelectorAll('[data-ideas]').forEach(b=>b.onclick=()=>openIdeas(b.dataset.ideas));
+  $('#p-plan').querySelectorAll('[data-tour]').forEach(b=>b.onclick=()=>openTour(b.dataset.tour));
 }
 
 /* Items with the same `h` (Breakfast, Highlight…) render under one heading */
@@ -375,7 +377,43 @@ function openIdeas(k){
   sheet.querySelector('.sheet-x').onclick=()=>sheet.close();
   if(sheet.showModal)sheet.showModal();else sheet.setAttribute('open','');
 }
-(()=>{const s=$('#ideas');if(s)s.addEventListener('click',e=>{if(e.target===s)s.close()})})();
+(()=>{const s=$('#ideas');if(s){s.addEventListener('click',e=>{if(e.target===s)s.close()});s.addEventListener('close',tourStop)}})();
+
+/* ---------- Audio tour (TOURS in ideas.js), read aloud with an English voice ---------- */
+const TX=typeof TOURS!=='undefined'?TOURS:{};
+let EN_VOICE=null,tourQ=[],tourOn=false;
+function pickEn(){let vs=[];try{vs=speechSynthesis.getVoices()}catch(e){return null}
+  const en=vs.filter(v=>/^en[-_](us|gb|au|ie)/i.test(v.lang||''));
+  const score=v=>(/enhanced|premium|neural|natural|online/i.test(v.name)?20:0)+(/samantha|daniel|karen|serena|google us|aria|jenny|guy/i.test(v.name)?10:0)+(/^en[-_]us/i.test(v.lang)?3:0);
+  EN_VOICE=en.sort((a,b)=>score(b)-score(a))[0]||null;return EN_VOICE}
+try{speechSynthesis.addEventListener('voiceschanged',pickEn)}catch(e){}
+function tourMark(i){document.querySelectorAll('.tour-stop').forEach((el,j)=>el.classList.toggle('playing',j===i));const b=document.querySelector('.tour-all');if(b)b.textContent=i<0?'▶ Play all':'■ Stop'}
+function tourStop(){tourOn=false;tourQ=[];try{speechSynthesis.cancel()}catch(e){}tourMark(-1)}
+function tourNext(){
+  if(!tourOn||!tourQ.length){tourStop();return}
+  const [i,line]=tourQ.shift();tourMark(i);
+  const u=new SpeechSynthesisUtterance(line);const v=EN_VOICE||pickEn();if(v){u.voice=v;u.lang=v.lang}else u.lang='en-US';
+  u.rate=.95;u.onend=tourNext;u.onerror=tourNext;speechSynthesis.speak(u);
+}
+function tourPlay(k,from,only){
+  try{speechSynthesis.cancel()}catch(e){toast('Audio is not available here');return}
+  const st=TX[k].stops;tourQ=[];
+  st.forEach((x,i)=>{if(i<from||(only&&i!==from))return;(x.h+'. '+x.text).split(/(?<=[.!?])\s+/).forEach(l=>tourQ.push([i,l]))});
+  tourOn=true;setTimeout(tourNext,60);
+}
+function openTour(k){
+  const x=TX[k],d=DAYS.find(d=>d.k===k);if(!x||!d)return;
+  const sheet=$('#ideas');
+  sheet.querySelector('.sheet-body').innerHTML=`
+    <header><span class="zh">${CITIES[d.c].zh}</span><div><b>Audio tour</b><span>${esc(x.title)}</span></div><button class="sheet-x" aria-label="Close">✕</button></header>
+    <div class="tour-bar"><button class="btn solid tour-all">▶ Play all</button><span>Keep the screen on while it plays</span></div>
+    <ol class="tour">${x.stops.map((s,i)=>`<li class="tour-stop"><button class="tour-play" data-i="${i}" aria-label="Play ${esc(s.h)}">▶</button><div><b>${esc(s.h)}</b><span class="at">${esc(s.at||'')}</span><p>${esc(s.text)}</p></div></li>`).join('')}</ol>`;
+  sheet.style.setProperty('--cc',`var(--c-${d.c})`);
+  sheet.querySelector('.sheet-x').onclick=()=>sheet.close();
+  sheet.querySelector('.tour-all').onclick=()=>tourOn?tourStop():tourPlay(k,0,false);
+  sheet.querySelectorAll('.tour-play').forEach(b=>b.onclick=()=>tourPlay(k,+b.dataset.i,true));
+  if(sheet.showModal)sheet.showModal();else sheet.setAttribute('open','');
+}
 
 /* ---------- Photos (docs/img, fetched by the GitHub Action) ---------- */
 let PHOTOS=null;

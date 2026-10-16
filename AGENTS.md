@@ -43,7 +43,7 @@ The only time to load the live site is the last step of shipping, to confirm a d
 | Path | What it is | Edit when |
 |---|---|---|
 | `trip-data.js` | `CITIES`, `STAYS`, `TRANSIT`, `PLAN` | Bookings, confirmed plan, trains, hotels |
-| `ideas.js` | `IDEAS`: suggestions and guides per day (the "Ideas nearby" sheet) | Anything not confirmed yet |
+| `ideas.js` | `IDEAS`: suggestions and guides per day (the "Ideas nearby" sheet). `TOURS`: audio tours read aloud per day (the "Audio tour" sheet) | Anything not confirmed yet, tour scripts |
 | `phrases.js` | `DICT` for the Dictionary tab | Adding or fixing phrases |
 | `app.js` | Rendering, tabs, animations, speech | Behavior changes |
 | `styles.css` | Tokens and components | Visual changes |

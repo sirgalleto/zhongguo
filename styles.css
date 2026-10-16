@@ -303,3 +303,16 @@ nav.tabs{position:fixed;left:0;right:0;bottom:0;z-index:6;background:color-mix(i
 .sheet .guide b{font-size:13.5px;font-weight:500}
 .sheet .guide p{margin:3px 0 0;font-size:13.5px;color:var(--muted);line-height:1.5}
 @media (prefers-reduced-motion:reduce){.sheet[open]{animation:none}}
+
+/* Audio tour */
+.tour-bar{display:flex;align-items:center;gap:12px;padding:12px 16px 4px;font-family:var(--f-mono);font-size:10.5px;letter-spacing:.04em;color:var(--muted)}
+.tour-bar .btn.solid{background:var(--cc,var(--accent));border-color:var(--cc,var(--accent));color:var(--card)}
+.tour{list-style:none;margin:0;padding:8px 16px 24px;counter-reset:s}
+.tour-stop{display:grid;grid-template-columns:34px 1fr;gap:12px;padding:12px 0;border-bottom:1px solid var(--line)}
+.tour-stop:last-child{border:0}
+.tour-play{width:34px;height:34px;border-radius:50%;border:1px solid color-mix(in srgb,var(--cc) 50%,var(--line));background:transparent;color:var(--cc);font-size:12px;cursor:pointer}
+.tour-stop b{display:block;font-size:14.5px;font-weight:500}
+.tour-stop .at{font-family:var(--f-mono);font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--cc)}
+.tour-stop p{margin:6px 0 0;font-size:14px;line-height:1.55;color:var(--muted)}
+.tour-stop.playing p{color:var(--ink)}
+.tour-stop.playing .tour-play{background:var(--cc);color:var(--card)}
