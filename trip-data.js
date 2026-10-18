@@ -101,10 +101,11 @@ const PLAN={
     {h:'Hutongs',text:'Dongsi Subdistrict (东四): walk the Dongsi Santiao to Batiao hutongs'},
     {h:'To identify',text:'Cenchi'},
     {h:'Hutongs',text:'Gulou and Nanluoguxiang hutongs in the evening'}]},
-  '2026-10-18':{t:'Train to Xi\'an',i:[
-    {h:'Check out',text:'Check out, ride west'},
-    {h:'Food',text:'Muslim Quarter (Huimin Street) right next to the hotel: roujiamo, yangrou paomo, persimmon cakes'},
-    {h:'Night view',text:'Bell and Drum Towers lit at night'}]},
+  '2026-10-18':{t:'Extra Beijing day: Temple of Heaven, Super Zhuanzhuan, MUJI terrace',i:[
+    {h:'Highlight',text:'Temple of Heaven. Enter at the East Gate, walking distance from the Manxin hotel. Get the combined ticket (Hall of Prayer, Echo Wall, Circular Mound): real name with your passport, on Trip.com or the official 畅游公园 WeChat account. Monuments 8:00 AM to 6:00 PM, last entry 5:30 PM. Allow 2 to 3 h',time:'Afternoon',name:'天坛公园 东门',map:'天坛公园 东门'},
+    {h:'Shopping',text:'Super Zhuanzhuan (超级转转): about 3,000 m² second-hand store with authenticated luxury bags, electronics and clothes, each item with a QR price and authentication tag. 3rd floor of the Beijing Friendship Store. Hours not confirmed, check Amap',time:'Evening',name:'超级转转 北京友谊商店',ref:'建国门外大街17号 北京友谊商店3层',map:'超级转转 北京友谊商店'},
+    {h:'Night view',text:'MUJI Hotel at Beijing Fun: MUJI Diner on the 4th floor has a terrace with a view of Tiananmen. Open until 11:00 PM, drinks last order 10:00 PM. Not confirmed that non-guests can use the terrace: ask at the diner',time:'Night',tag:'Maybe',name:'MUJI HOTEL BEIJING',map:'MUJI HOTEL 北京坊'}],
+    tip:'Temple of Heaven monuments close on Mondays: today (Sunday) is the day to see them.'},
   '2026-10-19':{t:'Terracotta Warriors',i:[
     {h:'Highlight',text:'Terracotta Army museum, go early (Pit 1 first)',status:'tobook'},
     {h:'Optional',text:'Huaqing Palace on the way back'},
