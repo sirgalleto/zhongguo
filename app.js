@@ -308,7 +308,7 @@ function renderStays(){
       <div class="ticket-foot">
         <div class="kv"><div class="k">Room</div><div class="v">${esc(s.room)}</div></div>
         <div class="kv"><div class="k">Area</div><div class="v">${copyChip(s.area.split(' · ')[0],'area')}${s.area.includes(' · ')?` <span class="mono" style="color:var(--muted);font-size:11px">${esc(s.area.split(' · ')[1])}</span>`:''}</div></div>
-        <div class="kv"><div class="k">Status</div><div class="v">${badge('confirmed')}</div></div>
+        <div class="kv"><div class="k">Status</div><div class="v">${badge(s.status||'confirmed')}</div></div>
       </div>
       <div class="links">
         <a href="https://uri.amap.com/search?keyword=${q}&city=${encodeURIComponent(c.zh)}" target="_blank" rel="noopener">Amap</a>

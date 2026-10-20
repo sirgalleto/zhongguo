@@ -21,9 +21,9 @@ const CITIES={
    on the Itinerary rail, so close cities sit close together. */
 const STAYS=[
   {c:'sh',name:'Waiting Hotel (Shanghai Bund Nanjing East Road Pedestrian Street)',in:'2026-10-11',out:'2026-10-14',room:'Premium One-Bed Room',area:'南京东路步行街 · Nanjing East Rd'},
-  {c:'bj',rail:5,name:'Manxin Hotel Beijing Temple of Heaven',in:'2026-10-14',out:'2026-10-18',room:'Guestroom (Queen Bed)',area:'天坛 · Temple of Heaven'},
-  {c:'xa',rail:5,name:"Mcsrh Hotel (Xi'an Bell and Drum Tower Branch)",in:'2026-10-18',out:'2026-10-21',room:'M1 Delight Double Bed Room',area:'钟鼓楼 · Bell & Drum Tower'},
-  {c:'cd',rail:4,name:'Mcsrh Hotel (Chengdu Chunxi Road Taikoo Li Branch)',in:'2026-10-21',out:'2026-10-25',room:'Sunshine M1 (Double Bed)',area:'春熙路 太古里 · Chunxi Rd, Taikoo Li'},
+  {c:'bj',rail:5,name:'Manxin Hotel Beijing Temple of Heaven',in:'2026-10-14',out:'2026-10-19',room:'Guestroom (Queen Bed)',area:'天坛 · Temple of Heaven'},
+  {c:'xa',rail:5,name:"Yun He Ye Bo Hotel (Xi'an Zhonggulou South Gate) 云和夜泊酒店(西安钟鼓楼南门店)",in:'2026-10-19',out:'2026-10-21',room:'Ye Po Double Bed Room · breakfast 7:00 to 10:00 AM',area:'碑林区文艺北路190号 · near the South Gate'},
+  {c:'cd',rail:4,name:'Chengdu hotel not booked (Mcsrh Chunxi Road booking was canceled)',in:'2026-10-21',out:'2026-10-25',room:'Not booked yet',area:'春熙路 太古里 · Chunxi Rd, Taikoo Li',status:'tobook'},
   {c:'cq',rail:1.75,name:'Asiam International Hotel in Hongyadong, Jiefangbei, Chongqing',in:'2026-10-25',out:'2026-10-29',room:'Lanshan City View King Room',area:'洪崖洞 解放碑 · Hongyadong, Jiefangbei'},
   {c:'sz',rail:7.25,name:'Garden Bincee Hotel by Lux Cabins (Futian Convention and Exhibition Center, Gangxia Subway Station)',in:'2026-10-29',out:'2026-10-31',room:'Deluxe King Room',area:'福田 岗厦 · Futian, Gangxia'},
   {c:'gz',rail:0.75,name:'Guangzhou Beston Hotel (Liwang Huadiwan Metro Station Branch)',in:'2026-10-31',out:'2026-11-04',room:'City View Special Queen Room',area:'荔湾 花地湾 · Liwan, Huadiwan'}
@@ -31,7 +31,7 @@ const STAYS=[
 const TRANSIT={
   '2026-10-11':{text:'Fly Taipei → Hong Kong → Shanghai Pudong T2, land 10:10 PM',status:'confirmed'},
   '2026-10-14':{text:'G train · Shanghai Hongqiao → Beijing South · about 4.5 to 6 h',status:'tobook'},
-  '2026-10-18':{text:"G train · Beijing West → Xi'an North · about 4.5 to 6 h",status:'tobook'},
+  '2026-10-19':{text:"Night train · Beijing → Xi'an",status:'confirmed'},
   '2026-10-21':{text:"G/D train · Xi'an North → Chengdu East · about 3.5 to 4.5 h",status:'tobook'},
   '2026-10-25':{text:'G train · Chengdu East → Chongqing North or West · about 1.5 to 2 h',status:'tobook'},
   '2026-10-29':{text:'G train · Chongqing West → Shenzhen North · about 6.5 to 8 h, longest ride of the trip',status:'tobook'},
@@ -106,16 +106,19 @@ const PLAN={
     {h:'Shopping',text:'Super Zhuanzhuan (超级转转): about 3,000 m² second-hand store with authenticated luxury bags, electronics and clothes, each item with a QR price and authentication tag. 3rd floor of the Beijing Friendship Store. Hours not confirmed, check Amap',time:'Evening',name:'超级转转 北京友谊商店',ref:'建国门外大街17号 北京友谊商店3层',map:'超级转转 北京友谊商店'},
     {h:'Night view',text:'MUJI Hotel at Beijing Fun: MUJI Diner on the 4th floor has a terrace with a view of Tiananmen. Open until 11:00 PM, drinks last order 10:00 PM. Not confirmed that non-guests can use the terrace: ask at the diner',time:'Night',tag:'Maybe',name:'MUJI HOTEL BEIJING',map:'MUJI HOTEL 北京坊'}],
     tip:'Temple of Heaven monuments close on Mondays: today (Sunday) is the day to see them.'},
-  '2026-10-19':{t:'Terracotta Warriors',i:[
-    {h:'Highlight',text:'Terracotta Army museum, go early (Pit 1 first)',status:'tobook'},
-    {h:'Optional',text:'Huaqing Palace on the way back'},
-    {h:'Night',text:'Grand Tang Everbright City light show at night'}],
-    tip:'Book with your passport in advance. Open daily, including Mondays.'},
-  '2026-10-20':{t:'City wall and pagodas',i:[
-    {h:'Highlight',text:'Rent a bike on the City Wall, full loop is about 14 km'},
-    {h:'Sight',text:'Big Wild Goose Pagoda and the north square fountains'},
-    {h:'Lunch',text:'Biangbiang noodles for lunch'},
-    {h:'Evening',text:'Slow evening, pack for Chengdu'}]},
+  '2026-10-19':{t:'Art district day, night train to Xi\'an',i:[
+    {h:'Art',text:'Most of the day in Beijing\'s art district'},
+    {h:'Train',text:'Night train to Xi\'an, check in at Yun He Ye Bo Hotel',status:'confirmed',name:'云和夜泊酒店(西安钟鼓楼南门店)',ref:'碑林区文艺北路190号',map:'云和夜泊酒店 钟鼓楼南门店'}]},
+  '2026-10-20':{t:'Terracotta Warriors',i:[
+    {h:'Tickets',text:'Entry slot 1:31 PM to 2:30 PM. Combo ticket: Terracotta Army Museum + Lishan Garden + free shuttle. Entry with your physical passport, no paper ticket. About 1 h from central Xi\'an',status:'confirmed',name:'秦始皇帝陵博物院',map:'秦始皇帝陵博物院'},
+    {h:'Highlight',text:'Gate and walk in: passport scan, walk to the pits (15 min)',time:'2:00 PM'},
+    {h:'Highlight',text:'Pit 3: the small command center (20 min)',time:'2:15 PM'},
+    {h:'Highlight',text:'Pit 2: glass cases with the kneeling archer and cavalry figures (40 min)',time:'2:35 PM'},
+    {h:'Highlight',text:'Bronze Chariots hall, the exhibition hall near Pit 2 (30 min)',time:'3:15 PM'},
+    {h:'Highlight',text:'Pit 1: the main army, saved for last for impact and lighter crowds (60 to 75 min)',time:'3:45 PM'},
+    {h:'Lishan Garden',text:'Lishan Garden by free shuttle, included in the ticket (about 1 h)',time:'5:00 PM',tag:'Optional'},
+    {h:'Getting back',text:'Head back to Xi\'an, about 1 h. Back around 6:00 PM, or about 7:00 PM with Lishan Garden',time:'5:30 PM'}],
+    tip:'Pits 3 and 2 first, Pit 1 last. Ignore anyone outside claiming you need a "special pass". Pits are dim and flash is not allowed: bring a charged phone. The exit runs through a long souvenir zone, keep walking. Closing time is reported between 5:30 PM and 6:30 PM: plan to finish by 5:30 PM.'},
   '2026-10-21':{t:'Train to Chengdu',i:[
     {h:'Shopping',text:'Chunxi Road and Taikoo Li, right outside the hotel'},
     {h:'Sight',text:'IFS mall rooftop panda'},
